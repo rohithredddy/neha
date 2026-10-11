@@ -12,6 +12,7 @@ M.Tech thesis → 1 research paper.
 | `03_DATA_PIPELINE.md` | `docs/` | building the data |
 | `04_IMPLEMENTATION_PLAN.md` | `docs/` | start of each milestone |
 | `05_EXPERIMENTS.md` | `docs/` | running experiments, tables, figures |
+| `06_RESEARCH_UPDATE_2026-10.md` | `docs/` | **read first** — Oct 2026 literature re-check, novelty re-positioning, venues |
 
 Also create empty `docs/DECISIONS.md` and `docs/refs.bib`.
 The Claude Code usage guide is a separate file outside this bundle.

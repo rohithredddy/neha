@@ -11,7 +11,9 @@ their Table 2).
 
 **Localization:** BRHR@1 / @3 / @5 (primary, their definition exactly), plus Precision@n⁺,
 Recall@n⁺, residue AUPRC. Per-interaction-type BRHR@5 across all six types. Atom-side
-localization if atom alignment succeeded (new measurement — flag it as such).
+localization: out of scope (public data is residue-level only).
+**Ligand-agnostic ceiling (N2):** BRHR@K of an ESM-2 linear probe with no ligand input, plus
+ligand-sensitivity of the residue ranking across ligands of the same protein.
 
 **Controls, mandatory:** random ranking, a hydrophobicity-only heuristic, and a
 sequence-conservation heuristic. Without these your BRHR numbers mean nothing.
@@ -54,7 +56,6 @@ properly with 5 seeds rather than all twelve badly.
 |---|---|
 | SAFE-DTI (full) | — |
 | − L_rank | listwise ranking |
-| − L_con | PU contrastive |
 | − L_type | six type heads (→ pooled supervision, ≈ ArkDTA's signal) |
 | − sink | attention sink column |
 | − SAG | sequence only |

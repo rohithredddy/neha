@@ -1,5 +1,9 @@
 # SAFE-DTI — Project Brief (v2)
 
+> **⚠ Oct 2026 update — read `06_RESEARCH_UPDATE_2026-10.md` first.** ExplainBind (bioRxiv,
+> Mar 2026) already supervises per-type attention on InteractBind (BRHR@1 55.6%), and the public
+> data is residue-level only. Parts of this file are superseded.
+
 **Title (working):** SAFE-DTI: Supervision-transferred, Adaptive and Faithfully Explainable
 Drug–Target Interaction Prediction
 

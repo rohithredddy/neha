@@ -7,8 +7,8 @@ reproducibility matter more than speed. Read `docs/00_PROJECT_BRIEF.md` and
 ## Project in three sentences
 Drug–target interaction models reach ~98% AUROC but identify the correct top binding residue
 only ~22% of the time, because they are trained on binary labels alone. SAFE-DTI supervises the
-cross-attention interaction map directly against residue–atom contact annotations from the
-InteractBind dataset, using an interaction-type-aware, sparsity- and PU-robust grounding loss,
+cross-attention interaction map directly against residue-level binding-site annotations from
+the public InteractBind release, using an interaction-type-aware, sparsity- and PU-robust grounding loss,
 with an optional pLDDT-gated structural branch. The central research question is whether that
 grounding survives fine-tuning on the large binary-only datasets used in real screening.
 
@@ -28,9 +28,9 @@ grounding survives fine-tuning on the large binary-only datasets used in real sc
    the spec defines it (max over atoms, rank residues, hit if any of top-K is a true binding
    residue, sink column excluded). Never reimplement or "improve" it inline — the numbers must
    stay comparable to the published benchmark.
-4. **Residue and atom indexing is the project's most dangerous bug.** Any code touching the
+4. **Residue indexing is the project's most dangerous bug.** Any code touching the
    ground-truth map needs a test with a hand-checked example.
-5. **Tests before training.** Especially `test_atom_align`, `test_brhr_matches_spec`, and
+5. **Tests before training.** Especially `test_map_alignment`, `test_brhr_matches_spec`, and
    `test_overfit`.
 6. **Determinism.** Every entry point takes `--seed`; seed torch, numpy, random; set
    `cudnn.deterministic = True`.
@@ -66,7 +66,9 @@ reported number.
 
 ## Current status
 <!-- Update at the end of every session. -->
-- Milestone: M0 not started
-- Last run: none
-- Known issues: none
-- Open questions: PDB→RDKit atom-order alignment unverified (M1)
+- Milestone: M0 done · M1 done (see docs/07_DATA_FINDINGS_M1.md) · M2 core metrics done
+- Last run: scripts/verify_interactbind.py --seed 0 (2026-10-11), 12 tests passing
+- Known issues: no CUDA GPU locally (CPU-first plan; cloud GPU only for the full ID matrix)
+- Storage: `data/` is a junction to D:\safedti\data; caches on D: via Makefile env vars
+- Open questions: which cloud GPU (Kaggle/Colab) for ESM precompute + training
+- Read `docs/06_RESEARCH_UPDATE_2026-10.md` first: novelty re-positioned to N1–N3; residue-level only

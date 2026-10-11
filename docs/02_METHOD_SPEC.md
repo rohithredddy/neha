@@ -16,9 +16,10 @@ degree, implicit valence, formal charge, radical electrons, hybridisation, aroma
 3 GIN layers, hidden 128, BatchNorm + ReLU, no pooling yet.
 `H_d ∈ R^{N×128}`.
 
-> Keeping **atoms** (not SELFIES tokens, not substructures) is a deliberate design choice: the
-> ground-truth map is indexed by ligand atom, so our map axis aligns with it exactly. This lets
-> us supervise and evaluate atom-side localization, which token-based models cannot do fairly.
+> Keeping **atoms** (not SELFIES tokens) is still a deliberate choice for representation quality,
+> but the public InteractBind release has **residue-level labels only** (no atom axis). All
+> supervision and evaluation are therefore on the residue axis via `s_j = max_i S_ij`. No
+> atom-side supervision or metrics. See DECISIONS.md, 2026-10-11.
 
 **Protein sequence — frozen ESM-2.** `esm2_t30_150M_UR50D` (640-d), precomputed to disk in fp16.
 `Linear(640→128)` then a 3-layer 1D CNN (kernels 3/6/9, residual) for local motif context.
@@ -95,7 +96,10 @@ Let `y⁺_j = 1` if residue `j` is a binding residue, `n⁺ = Σ_j y⁺_j` (typi
 Robust to sparsity and to which atom contacts which residue — it only asks that true binding
 residues rank high. This is the term most directly aligned with BRHR.
 
-**(b) Atom–residue contrastive (InfoNCE) on observed contacts.**
+**(b) ~~Atom–residue contrastive~~ — DROPPED (2026-10-11): needs atom-level maps, which are not
+public.** Kept here for the record only; do not implement.
+
+**(b, original text)**
 For each annotated contact `(i,j)` with strength `M_ij`, sample `K = 32` negative residues `j⁻`
 uniformly from non-annotated residues of the same protein:
 ```
@@ -117,8 +121,8 @@ showing per-type deltas is a required experiment.
 
 **Total:**
 ```
-L_stage1 = L_cls + λ_r L_rank + λ_c L_con + λ_t L_type + λ_s L_sink
-λ_r = 1.0, λ_c = 0.5, λ_t = 0.5, λ_s = 0.1        # tune λ_r first; it dominates
+L_stage1 = L_cls + λ_r L_rank + λ_t L_type + λ_s L_sink
+λ_r = 1.0, λ_t = 0.5, λ_s = 0.1        # tune λ_r first; it dominates
 ```
 Ramp grounding terms in linearly over the first 3 epochs so the map is not shaped before the
 encoders are meaningful.
@@ -191,13 +195,16 @@ N_max: 128                # ligands are small; check the dataset's distribution 
 L_max: 1024
 hidden: 128 ; heads: 4
 tau_plddt: 70 ; T_plddt: 10 ; p_drop_structure: 0.3
-lambda: {rank: 1.0, con: 0.5, type: 0.5, sink: 0.1, cons: 0.5}
+lambda: {rank: 1.0, type: 0.5, sink: 0.1, cons: 0.5}
 T_rank: 1.0 ; T_c: 0.1 ; T_m: 2.0
 ema_decay: 0.999
 ```
 
-Truncation: never truncate a protein in a way that drops annotated binding residues. If
-`L > L_max`, crop a 1024-residue window centred on the annotated contacts (and for unannotated
+Truncation (**training only**): never truncate a protein in a way that drops annotated binding
+residues. If `L > L_max`, crop a 1024-residue window centred on the annotated contacts.
+**At evaluation, never use labels to choose a window** — that leaks the answer. Eval uses the full
+sequence (ESM embeddings computed in overlapping windows for L > 1022; the map is N×L at any L).
+(DECISIONS 2026-10-11; 42% of p_ood_25 test pairs have L > 1024.) Original text continued: (and for unannotated
 proteins, centre on the highest-pLDDT contiguous window). **Log every truncation; a silent crop
 that removes the answer will quietly destroy your BRHR numbers.**
 
@@ -210,8 +217,8 @@ not hours. If it doesn't, ESM is being run inside the loop or maps are being reb
 
 - `test_sag_fallback` — `a=0` output bitwise-identical to sequence-only; structure grads None.
 - `test_brhr_matches_spec` — hand-built 4×6 map with a known answer gives the expected BRHR@K.
-- `test_map_alignment` — a synthetic pair where atom 2 contacts residue 7 yields the ground-truth
-  index at `M[2,7]`; **off-by-one in residue indexing is the single most likely bug in this
+- `test_map_alignment` — a synthetic pair whose binding-site string has a 1 at position 7 yields
+  `y⁺[7] = 1` (0-based, aligned to FASTA) and `len(y⁺) == len(fasta)`; **off-by-one in residue indexing is the single most likely bug in this
   project and would silently invalidate every number.**
 - `test_mask_invariance` — padding does not change the logit (tol 1e-5) or the residue ranking.
 - `test_grounding_loss_zero` — a perfect map gives `L_rank ≈ 0`.
