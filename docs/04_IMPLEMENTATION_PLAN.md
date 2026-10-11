@@ -39,10 +39,12 @@ JSON results writer, `tests/test_smoke.py`.
 
 ## M1 — InteractBind verification *(the highest-risk session; do it first)*
 `scripts/verify_interactbind.py`: load, print real shapes/dtypes, check residue axis vs FASTA
-length, resolve the **PDB→RDKit atom-order permutation** (`data/atom_align.py` + test), compute
+length, parse residue-level binding-site strings (no atom alignment — public data has no atom
+axis, see DECISIONS.md 2026-10-11), fix the ID fold assignment, compute
 a random-ranking BRHR baseline, write `DATA_CARD.md`.
-**Done:** a report printed with real numbers from real data, and `tests/test_atom_align.py`
-passing on ≥ 50 random pairs. If atom alignment fails, record the fallback decision and proceed
+**Done:** a report printed with real numbers from real data, and `tests/test_map_alignment.py`
+passing on ≥ 50 random pairs. Also train the ligand-agnostic ESM linear probe (N2) here — it is
+the earliest real result and a sanity baseline. (Old text: if atom alignment fails, record and proceed
 residue-only.
 
 ## M2 — Metrics first

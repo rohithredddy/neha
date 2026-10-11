@@ -25,7 +25,12 @@ label, docking affinity, six interaction maps, aggregated map.
 
 **Day-1 verification task — do this before anything else:**
 1. Download and load 10 samples. Print the actual shapes and dtypes of the maps.
-2. Confirm the map's residue axis matches `len(FASTA)` and the atom axis matches the RDKit atom
+2. **[Superseded 2026-10-11 — public data is residue-level only; see DECISIONS.md.]** Parse each
+   `*_binding_site` string into a 0/1 vector and assert `len == len(fasta)`. Inspect `att_site`.
+   Locate the ID 5-fold assignment; if it is not published, create a seeded, protein-grouped
+   5-fold split, save it, and **re-run every baseline on it** (their Table 2 then becomes
+   reference only). The OOD splits are public and are the directly comparable setting.
+   *Original text:* confirm the map's residue axis matches `len(FASTA)` and the atom axis matches the RDKit atom
    count of the SMILES *in RDKit's canonical atom order*. It very likely will not match
    automatically — the maps were built from PDB atom order. **Write an explicit
    PDB-atom-order → RDKit-atom-order permutation, with a test.** If you cannot resolve the atom
@@ -106,7 +111,7 @@ Log and drop sanitisation failures with counts.
 ```
 data/processed/
 ├── interactbind/{id_fold{0..4},ood_p{25,28,31,33}}/{train,val,test}.parquet
-├── interactbind/maps/            # sparse COO per pair: (atom_idx, res_idx, type, strength)
+├── interactbind/maps/            # per pair, per type: indices of binding residues (residue-level)
 ├── retention_set.parquet         # held-out, identity-filtered, used in neither stage
 ├── transfer/{bindingdb,biosnap,human}/{train,val,test}_{random,cluster}.csv
 ├── target_map.csv  ·  structure_manifest.csv  ·  structures/*.npz

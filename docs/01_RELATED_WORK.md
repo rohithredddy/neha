@@ -1,5 +1,9 @@
 # Related Work and Positioning
 
+> **⚠ Oct 2026 update — read `06_RESEARCH_UPDATE_2026-10.md` first.** ExplainBind (bioRxiv,
+> Mar 2026) already supervises per-type attention on InteractBind (BRHR@1 55.6%), and the public
+> data is residue-level only. Parts of this file are superseded.
+
 Everything below was verified against a real source. URLs given so you can fetch and cite
 properly rather than retyping.
 
