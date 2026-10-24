@@ -1,0 +1,248 @@
+{
+  "name": "diagnostic_lowid_id_cc30_fold0_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T11:21:29+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "homology",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 1e-06,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "mmseqs": "D:/safedti/tools/mmseqs/mmseqs.bat",
+    "workdir": "D:/safedti/work/mmseqs",
+    "sensitivity": 7.5,
+    "max_seqs": 300,
+    "max_accept": 10,
+    "threads": 12,
+    "top_m": 5,
+    "ligand_fp": {
+      "radius": 2,
+      "n_bits": 2048
+    },
+    "ligand_weight_floor": 0.01,
+    "identity_bins": [
+      0.0,
+      0.3,
+      0.5,
+      0.9,
+      0.999,
+      1.01
+    ],
+    "identity_thresholds": [
+      0.25,
+      0.28,
+      0.31,
+      0.33,
+      0.5,
+      0.9,
+      0.999
+    ],
+    "qcov_min": 0.8,
+    "split": "id_cc30_fold0"
+  },
+  "metrics": {
+    "split": "id_cc30_fold0",
+    "n_low_identity_pairs": 783,
+    "all_low_identity": {
+      "n_pairs": 783,
+      "knn": {
+        "brhr@1": 0.38186463713645935,
+        "brhr@3": 0.5376756191253662,
+        "brhr@5": 0.5977011322975159,
+        "precision@npos": 0.26987763017530186,
+        "n_pairs": 783
+      },
+      "residue_type_prior": {
+        "brhr@1": 0.07024265825748444,
+        "brhr@3": 0.20434227585792542,
+        "brhr@5": 0.27330780029296875,
+        "precision@npos": 0.06482250268165483,
+        "n_pairs": 783
+      },
+      "random_analytic": {
+        "brhr@1": 0.040195716723368566,
+        "brhr@3": 0.11486789443731735,
+        "brhr@5": 0.1826091408856791
+      }
+    },
+    "no_hit": {
+      "n_pairs": 47,
+      "knn": {
+        "brhr@1": 0.021276595070958138,
+        "brhr@3": 0.10638298094272614,
+        "brhr@5": 0.21276596188545227,
+        "precision@npos": 0.05223912000656128,
+        "n_pairs": 47
+      },
+      "residue_type_prior": {
+        "brhr@1": 0.06382978707551956,
+        "brhr@3": 0.12765957415103912,
+        "brhr@5": 0.1489361673593521,
+        "precision@npos": 0.06328387558460236,
+        "n_pairs": 47
+      },
+      "random_analytic": {
+        "brhr@1": 0.05081645419239921,
+        "brhr@3": 0.14268085227071808,
+        "brhr@5": 0.22314535735442514
+      }
+    },
+    "hit_but_other_topm_ge_0.3": {
+      "n_pairs": 323,
+      "knn": {
+        "brhr@1": 0.39318886399269104,
+        "brhr@3": 0.5448916554450989,
+        "brhr@5": 0.6068111658096313,
+        "precision@npos": 0.24445761740207672,
+        "n_pairs": 323
+      },
+      "residue_type_prior": {
+        "brhr@1": 0.06811145693063736,
+        "brhr@3": 0.22600619494915009,
+        "brhr@5": 0.297213613986969,
+        "precision@npos": 0.07580243051052094,
+        "n_pairs": 323
+      },
+      "random_analytic": {
+        "brhr@1": 0.04265592142603465,
+        "brhr@3": 0.12172416576458234,
+        "brhr@5": 0.19321520663983816
+      }
+    },
+    "hit_all_topm_lt_0.3": {
+      "n_pairs": 413,
+      "knn": {
+        "brhr@1": 0.4140435755252838,
+        "brhr@3": 0.5811138153076172,
+        "brhr@5": 0.6343825459480286,
+        "precision@npos": 0.3145257234573364,
+        "n_pairs": 413
+      },
+      "residue_type_prior": {
+        "brhr@1": 0.07263922691345215,
+        "brhr@3": 0.19612590968608856,
+        "brhr@5": 0.2687651216983795,
+        "precision@npos": 0.05641039460897446,
+        "n_pairs": 413
+      },
+      "random_analytic": {
+        "brhr@1": 0.03706297875725335,
+        "brhr@3": 0.10634057081291921,
+        "brhr@5": 0.16970124400281122
+      }
+    },
+    "hit_all_topm_lt_0.3_by_qcov": {
+      "[0.0,0.3)": {
+        "n_pairs": 19,
+        "knn": {
+          "brhr@1": 0.15789473056793213,
+          "brhr@3": 0.15789473056793213,
+          "brhr@5": 0.2631579041481018,
+          "precision@npos": 0.08161027729511261,
+          "n_pairs": 19
+        },
+        "residue_type_prior": {
+          "brhr@1": 0.05263157933950424,
+          "brhr@3": 0.2631579041481018,
+          "brhr@5": 0.2631579041481018,
+          "precision@npos": 0.06980279833078384,
+          "n_pairs": 19
+        },
+        "random_analytic": {
+          "brhr@1": 0.0376726545747104,
+          "brhr@3": 0.10848024965528537,
+          "brhr@5": 0.17365128392227866
+        }
+      },
+      "[0.3,0.8)": {
+        "n_pairs": 185,
+        "knn": {
+          "brhr@1": 0.3567567467689514,
+          "brhr@3": 0.5189189314842224,
+          "brhr@5": 0.5621621608734131,
+          "precision@npos": 0.2478683888912201,
+          "n_pairs": 185
+        },
+        "residue_type_prior": {
+          "brhr@1": 0.09189189225435257,
+          "brhr@3": 0.22162161767482758,
+          "brhr@5": 0.3081081211566925,
+          "precision@npos": 0.061211250722408295,
+          "n_pairs": 185
+        },
+        "random_analytic": {
+          "brhr@1": 0.0407877557637368,
+          "brhr@3": 0.11655319872663124,
+          "brhr@5": 0.18530085513782374
+        }
+      },
+      "[0.8,1.01)": {
+        "n_pairs": 209,
+        "knn": {
+          "brhr@1": 0.4880382716655731,
+          "brhr@3": 0.6746411323547363,
+          "brhr@5": 0.7320573925971985,
+          "precision@npos": 0.39470282196998596,
+          "n_pairs": 209
+        },
+        "residue_type_prior": {
+          "brhr@1": 0.057416267693042755,
+          "brhr@3": 0.16746412217617035,
+          "brhr@5": 0.23444975912570953,
+          "precision@npos": 0.05094334855675697,
+          "n_pairs": 209
+        },
+        "random_analytic": {
+          "brhr@1": 0.03371050226571687,
+          "brhr@3": 0.09710616860219347,
+          "brhr@5": 0.1555338812351213
+        }
+      }
+    }
+  },
+  "wall_time_s": 104.64309239387512
+}

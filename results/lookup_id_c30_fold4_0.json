@@ -1,0 +1,111 @@
+{
+  "name": "lookup_id_c30_fold4_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T10:00:54+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "lookup",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "split": "id_c30_fold4"
+  },
+  "metrics": {
+    "n_train": 60329,
+    "n_test": 16961,
+    "localization": {
+      "n_eval_pairs": 5306,
+      "coverage_fasta_in_train_table": 0.0,
+      "frac_pair_in_train": 0.0,
+      "median_L": 355.0,
+      "lookup_all": {
+        "brhr@1": 0.03901243954896927,
+        "brhr@3": 0.11176027357578278,
+        "brhr@5": 0.17791180312633514,
+        "precision@npos": 0.04024881841892168,
+        "n_pairs": 5306
+      },
+      "random_all": {
+        "brhr@1": 0.04372408613562584,
+        "brhr@3": 0.11307953298091888,
+        "brhr@5": 0.18055032193660736,
+        "precision@npos": 0.039965925302217466,
+        "n_pairs": 5306
+      },
+      "random_all_analytic": {
+        "brhr@1": 0.04074683676361866,
+        "brhr@3": 0.11598934881016053,
+        "brhr@5": 0.18374070339668294
+      }
+    },
+    "binary": {
+      "n_test": 16961,
+      "test_pos_frac": 0.3128353281056541,
+      "fasta_prior": {
+        "auroc": 0.5,
+        "auprc": 0.3128353281056541,
+        "coverage": 0.0
+      },
+      "uniprot_id_prior": {
+        "auroc": 0.538219944137773,
+        "auprc": 0.33736918735255395,
+        "coverage": 0.922351276457756
+      },
+      "smiles_prior": {
+        "auroc": 0.9822904079029221,
+        "auprc": 0.9378312102570358,
+        "coverage": 0.802841813572313
+      },
+      "ligand_heavy_atoms": {
+        "auroc": 0.9865066105360113,
+        "auprc": 0.9627968989654743,
+        "n_rdkit_parse_failures": 0
+      }
+    }
+  },
+  "wall_time_s": 5.702513933181763
+}

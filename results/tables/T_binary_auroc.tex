@@ -1,0 +1,13 @@
+\begin{tabular}{lrrrrrrr}
+\toprule
+split & FASTA prior & UniProt prior & SMILES prior & heavy atoms & ligand-only GBM & GBM, size-matched & FusionDTI (published) \\ \midrule
+ID, FASTA-grouped (5 folds) & 50.0 $\pm$ 0.0 & 57.5 $\pm$ 0.2 & 98.7 $\pm$ 0.1 & 98.7 $\pm$ 0.1 & 99.9 $\pm$ 0.0 & 95.0 $\pm$ 0.4 & 98.3 \\
+p\_ood\_25 & 50.0 & 49.3 & 69.9 & 85.2 & 85.7 & 66.9 & 81.8 \\
+p\_ood\_28 & 50.0 & 48.5 & 68.7 & 81.2 & 87.9 & 75.0 & — \\
+p\_ood\_31 & 50.0 & 49.0 & 70.6 & 82.6 & 89.8 & 74.1 & — \\
+p\_ood\_33 & 50.7 & 50.0 & 63.5 & 79.3 & 88.5 & 75.2 & 91.8 \\
+ID, 30\% set-cover clusters (5 folds) & 50.0 $\pm$ 0.0 & 52.8 $\pm$ 0.8 & 98.2 $\pm$ 0.1 & 98.7 $\pm$ 0.3 & 99.8 $\pm$ 0.0 & 92.6 $\pm$ 1.2 & — \\
+ID, 30\% connected components (5 folds) & 50.0 $\pm$ 0.0 & 52.6 $\pm$ 0.3 & 98.2 $\pm$ 0.2 & 98.7 $\pm$ 0.2 & 99.8 $\pm$ 0.0 & 92.9 $\pm$ 0.5 & — \\
+ID, leak-free components (4 folds, proposed) & 50.0 $\pm$ 0.0 & 51.8 $\pm$ 0.2 & 98.1 $\pm$ 0.1 & 98.7 $\pm$ 0.2 & 99.8 $\pm$ 0.1 & 91.8 $\pm$ 1.4 & — \\
+\bottomrule
+\end{tabular}

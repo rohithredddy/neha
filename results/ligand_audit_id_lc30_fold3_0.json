@@ -1,0 +1,117 @@
+{
+  "name": "ligand_audit_id_lc30_fold3_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T10:12:45+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "ligand_audit",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "single_descriptors": [
+      "HeavyAtomCount",
+      "MolWt",
+      "NumRotatableBonds",
+      "RingCount",
+      "MolLogP",
+      "NumHDonors",
+      "NumHAcceptors",
+      "TPSA"
+    ],
+    "gbm": {
+      "max_iter": 300,
+      "learning_rate": 0.1,
+      "max_leaf_nodes": 31,
+      "early_stopping": false
+    },
+    "size_match_column": "HeavyAtomCount",
+    "size_matched_dir": "data/processed/audit/size_matched",
+    "split": "id_lc30_fold3"
+  },
+  "metrics": {
+    "n_train": 59811,
+    "n_test": 21202,
+    "test_pos_frac": 0.3068578435996604,
+    "n_test_rdkit_failures": 0,
+    "purity_train": {
+      "n_ligands": 11695,
+      "frac_ligands_multi_row": 0.18135955536554083,
+      "frac_multi_row_ligands_pure": 0.9486091466289486,
+      "frac_rows_on_multi_row_pure_ligands": 0.7546437946197188
+    },
+    "purity_test": {
+      "n_ligands": 4823,
+      "frac_ligands_multi_row": 0.1799709724238026,
+      "frac_multi_row_ligands_pure": 0.9435483870967742,
+      "frac_rows_on_multi_row_pure_ligands": 0.7753042165833411
+    },
+    "single_descriptor_auroc": {
+      "HeavyAtomCount": 0.9880632514837859,
+      "MolWt": 0.9860223712511259,
+      "NumRotatableBonds": 0.8538147170711814,
+      "RingCount": 0.9777234439262212,
+      "MolLogP": 0.5748110523078148,
+      "NumHDonors": 0.7856342010247732,
+      "NumHAcceptors": 0.8576252777679696,
+      "TPSA": 0.8604595872810173
+    },
+    "ligand_only_gbm": {
+      "auroc": 0.9977907625489039,
+      "auprc": 0.9947073456062883
+    },
+    "size_matched": {
+      "n": 1850,
+      "frac_of_test": 0.08725591925290067,
+      "heavy_atom_auroc": 0.49999999999999994,
+      "ligand_only_gbm": {
+        "auroc": 0.9137805697589482,
+        "auprc": 0.8876864990322678
+      }
+    }
+  },
+  "wall_time_s": 20.731050491333008
+}

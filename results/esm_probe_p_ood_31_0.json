@@ -1,0 +1,93 @@
+{
+  "name": "esm_probe_p_ood_31_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T11:19:26+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "esm_probe",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "esm_model": "esm2_t6_8M_UR50D",
+    "esm_root": "data/processed/esm",
+    "probe_splits": [
+      "id_fold0",
+      "id_lc30_fold0",
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33"
+    ],
+    "n_train_seqs": 2000,
+    "neg_per_pos": 3,
+    "logreg": {
+      "C": 1.0,
+      "max_iter": 2000
+    },
+    "seqs_file": "data/processed/esm/probe_sequences.txt",
+    "split": "p_ood_31"
+  },
+  "metrics": {
+    "n_train_seqs": 2000,
+    "n_train_residues": 112348,
+    "train_pos_frac": 0.25,
+    "n_eval_pairs": 658,
+    "probe": {
+      "brhr@1": 0.23708206415176392,
+      "brhr@3": 0.46960484981536865,
+      "brhr@5": 0.5987842082977295,
+      "precision@npos": 0.18779770930306164,
+      "n_pairs": 658
+    },
+    "random_analytic": {
+      "brhr@1": 0.04377049384046261,
+      "brhr@3": 0.12490013970226481,
+      "brhr@5": 0.19825149569584627
+    }
+  },
+  "wall_time_s": 16.338298082351685
+}

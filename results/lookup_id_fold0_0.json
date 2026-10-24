@@ -1,0 +1,111 @@
+{
+  "name": "lookup_id_fold0_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T10:00:04+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "lookup",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "split": "id_fold0"
+  },
+  "metrics": {
+    "n_train": 60826,
+    "n_test": 16962,
+    "localization": {
+      "n_eval_pairs": 5280,
+      "coverage_fasta_in_train_table": 0.0,
+      "frac_pair_in_train": 0.0,
+      "median_L": 316.0,
+      "lookup_all": {
+        "brhr@1": 0.04337121173739433,
+        "brhr@3": 0.1295454502105713,
+        "brhr@5": 0.20018939673900604,
+        "precision@npos": 0.04503154937516559,
+        "n_pairs": 5280
+      },
+      "random_all": {
+        "brhr@1": 0.04469696804881096,
+        "brhr@3": 0.1251893937587738,
+        "brhr@5": 0.2026515156030655,
+        "precision@npos": 0.04536086715983622,
+        "n_pairs": 5280
+      },
+      "random_all_analytic": {
+        "brhr@1": 0.044263726616578646,
+        "brhr@3": 0.12549423564425377,
+        "brhr@5": 0.19805902603382486
+      }
+    },
+    "binary": {
+      "n_test": 16962,
+      "test_pos_frac": 0.311284046692607,
+      "fasta_prior": {
+        "auroc": 0.5,
+        "auprc": 0.311284046692607,
+        "coverage": 0.0
+      },
+      "uniprot_id_prior": {
+        "auroc": 0.5742596661919659,
+        "auprc": 0.36424273563506115,
+        "coverage": 0.9306685532366467
+      },
+      "smiles_prior": {
+        "auroc": 0.9883097636612661,
+        "auprc": 0.9571586155001104,
+        "coverage": 0.8272609362103526
+      },
+      "ligand_heavy_atoms": {
+        "auroc": 0.9872835393612551,
+        "auprc": 0.9627431132725194,
+        "n_rdkit_parse_failures": 0
+      }
+    }
+  },
+  "wall_time_s": 5.317108869552612
+}

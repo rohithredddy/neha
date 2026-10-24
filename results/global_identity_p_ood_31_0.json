@@ -1,0 +1,170 @@
+{
+  "name": "global_identity_p_ood_31_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T11:22:52+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "global_identity",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 1e-06,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "mmseqs": "D:/safedti/tools/mmseqs/mmseqs.bat",
+    "workdir": "D:/safedti/work/mmseqs",
+    "sensitivity": 7.5,
+    "max_seqs": 300,
+    "max_accept": 20,
+    "threads": 12,
+    "top_m": 5,
+    "ligand_fp": {
+      "radius": 2,
+      "n_bits": 2048
+    },
+    "ligand_weight_floor": 0.01,
+    "identity_bins": [
+      0.0,
+      0.3,
+      0.5,
+      0.9,
+      0.999,
+      1.01
+    ],
+    "identity_thresholds": [
+      0.25,
+      0.28,
+      0.31,
+      0.33,
+      0.5,
+      0.9,
+      0.999
+    ],
+    "qcov_min": 0.8,
+    "n_candidates": 10,
+    "gap_open": -10.0,
+    "gap_extend": -0.5,
+    "background_pairs": 1000,
+    "global_splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33"
+    ],
+    "split": "p_ood_31"
+  },
+  "metrics": {
+    "n_test_rows": 1317,
+    "n_test_sequences": 888,
+    "frac_test_rows_with_mmseqs_hit": 0.9164768413059985,
+    "nominal_max_similarity": 0.31,
+    "identity_aln": {
+      "rows_with_hit": {
+        "quantiles": {
+          "0.1": 0.10504307707993475,
+          "0.25": 0.15741063527392668,
+          "0.5": 0.2435064935064935,
+          "0.75": 0.34323922734026746,
+          "0.9": 0.4274245804636728
+        },
+        "frac_ge": {
+          "0.25": 0.48467274233637114,
+          "0.28": 0.3827671913835957,
+          "0.31": 0.31648715824357915,
+          "0.33": 0.29494614747307374,
+          "0.5": 0.03645401822700911,
+          "0.9": 0.0,
+          "0.999": 0.0
+        },
+        "frac_ge_nominal": 0.31648715824357915
+      },
+      "frac_all_test_rows_ge_nominal_lower_bound": 0.2900531511009871
+    },
+    "identity_shorter": {
+      "rows_with_hit": {
+        "quantiles": {
+          "0.1": 0.22453222453222454,
+          "0.25": 0.26262626262626265,
+          "0.5": 0.3113207547169811,
+          "0.75": 0.39920948616600793,
+          "0.9": 0.5051668806161753
+        },
+        "frac_ge": {
+          "0.25": 0.8177299088649544,
+          "0.28": 0.6503728251864126,
+          "0.31": 0.503728251864126,
+          "0.33": 0.4225352112676056,
+          "0.5": 0.1043910521955261,
+          "0.9": 0.02236951118475559,
+          "0.999": 0.013256006628003313
+        },
+        "frac_ge_nominal": 0.503728251864126
+      },
+      "frac_all_test_rows_ge_nominal_lower_bound": 0.4616552771450266
+    },
+    "background_random_pairs": {
+      "identity_aln": {
+        "quantiles": {
+          "0.1": 0.019247597079710743,
+          "0.25": 0.04035689134696038,
+          "0.5": 0.07775286497259591,
+          "0.75": 0.11181304848223278,
+          "0.9": 0.14285714285714285
+        },
+        "frac_ge_nominal": 0.001
+      },
+      "identity_shorter": {
+        "quantiles": {
+          "0.1": 0.045489952865293976,
+          "0.25": 0.09828029572484731,
+          "0.5": 0.16956521739130434,
+          "0.75": 0.2138536866359447,
+          "0.9": 0.24
+        },
+        "frac_ge_nominal": 0.003
+      }
+    }
+  },
+  "wall_time_s": 21.342315435409546
+}

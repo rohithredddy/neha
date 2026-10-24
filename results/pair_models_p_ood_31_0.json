@@ -1,0 +1,132 @@
+{
+  "name": "pair_models_p_ood_31_0",
+  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
+  "timestamp": "2026-10-24T11:14:38+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "pair_models",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "ligand_fp": {
+      "radius": 2,
+      "n_bits": 1024
+    },
+    "protein_features": [
+      "aac",
+      "dpc"
+    ],
+    "variants": [
+      "ligand_only",
+      "protein_only",
+      "pair"
+    ],
+    "gbm": {
+      "max_iter": 300,
+      "learning_rate": 0.1,
+      "max_leaf_nodes": 31,
+      "early_stopping": false
+    },
+    "size_matched_dir": "data/processed/audit/size_matched",
+    "pair_splits": [
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3",
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33"
+    ],
+    "split": "p_ood_31"
+  },
+  "metrics": {
+    "n_train": 10492,
+    "n_test": 1317,
+    "rdkit_failures": 0,
+    "size_matched_n": 552,
+    "ligand_only": {
+      "all": {
+        "auroc": 0.8869453118153601,
+        "auprc": 0.8937780174460294
+      },
+      "fit_s": 20.481363773345947,
+      "size_matched": {
+        "auroc": 0.7363342785129174,
+        "auprc": 0.7468832422331282
+      }
+    },
+    "protein_only": {
+      "all": {
+        "auroc": 0.5071732984027564,
+        "auprc": 0.50209800854955
+      },
+      "fit_s": 10.607019186019897,
+      "size_matched": {
+        "auroc": 0.5153066582650704,
+        "auprc": 0.5213349954493265
+      }
+    },
+    "pair": {
+      "all": {
+        "auroc": 0.9061555917365814,
+        "auprc": 0.9131617928678342
+      },
+      "fit_s": 31.937507152557373,
+      "size_matched": {
+        "auroc": 0.7975215290905272,
+        "auprc": 0.7973609443808293
+      }
+    }
+  },
+  "wall_time_s": 64.4359040260315
+}
