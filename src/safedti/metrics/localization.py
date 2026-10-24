@@ -124,3 +124,61 @@ def random_brhr_expected(L: int, n_pos: int, k: int) -> float:
     if k >= L:
         return 1.0
     return 1.0 - math.comb(L - n_pos, k) / math.comb(L, k)
+
+
+def ligand_specificity_gain(
+    scores: list,
+    labels: list,
+    groups: list,
+    k: int,
+) -> dict[str, float]:
+    """Ligand-Specificity Gain LSG@K: does a ranking follow *this* ligand's sites?
+
+    For pair i of protein p (with m >= 2 annotated ligands), using the pair's own ranking r_i:
+        LSG_i = hit@K(r_i, y_i) - mean_{j != i, j in p} hit@K(r_i, y_j)
+    where hit@K is BRHR@K of one pair (computed by `brhr_per_pair`). A ligand-blind method gives
+    every ligand of p the same ranking, so the LSG_i sum to exactly 0 over each protein. Positive
+    values need rankings tailored to the ligand. Pairs whose protein has one ligand are skipped.
+
+    Args:
+        scores: Per-pair (L_p,) residue scores (numpy or tensor).
+        labels: Per-pair (L_p,) 0/1 binding sites.
+        groups: Per-pair protein key; pairs sharing a key share the residue axis.
+        k: BRHR cutoff.
+
+    Returns:
+        {"lsg": mean over pairs, "own": mean own hit@K, "other": mean other-ligand hit@K,
+         "n_pairs": pairs used, "n_proteins": proteins used}.
+    """
+    by_group: dict = {}
+    for i, g in enumerate(groups):
+        by_group.setdefault(g, []).append(i)
+    own_all, other_all, n_prot = [], [], 0
+    for idx in by_group.values():
+        if len(idx) < 2:
+            continue
+        n_prot += 1
+        S = torch.stack([torch.as_tensor(scores[i], dtype=torch.float64) for i in idx])
+        Y = torch.stack([torch.as_tensor(labels[i]).bool() for i in idx])
+        m, L = Y.shape
+        assert S.shape == (m, L), "pairs of one protein must share the residue axis"
+        mask = torch.ones(m, L, dtype=torch.bool)
+        # hits[a, b] = hit@K of ranking a against sites of ligand b
+        hits = torch.stack(
+            [brhr_per_pair(S, Y[b].expand(m, L), mask, (k,))[k] for b in range(m)], dim=1
+        )
+        own = hits.diagonal()
+        other = (hits.sum(dim=1) - own) / (m - 1)
+        own_all.append(own)
+        other_all.append(other)
+    if not own_all:
+        return {"lsg": float("nan"), "own": float("nan"), "other": float("nan"),
+                "n_pairs": 0, "n_proteins": 0}  # fmt: skip
+    own, other = torch.cat(own_all), torch.cat(other_all)
+    return {
+        "lsg": (own - other).mean().item(),
+        "own": own.mean().item(),
+        "other": other.mean().item(),
+        "n_pairs": int(own.numel()),
+        "n_proteins": n_prot,
+    }

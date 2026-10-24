@@ -84,3 +84,19 @@ def test_random_ranking_matches_analytic():
     rm = torch.ones(B, L, dtype=torch.bool)
     emp = brhr(s, y, rm, ks=(k,))[k]
     assert emp == pytest.approx(random_brhr_expected(L, npos, k), abs=0.01)
+
+
+def test_lsg_is_zero_for_ligand_blind_and_one_for_disjoint_oracle():
+    from safedti.metrics.localization import ligand_specificity_gain
+
+    # protein "p" (L=4) with two ligands: sites {0} and {3} (disjoint)
+    y = [torch.tensor([1, 0, 0, 0]), torch.tensor([0, 0, 0, 1])]
+    blind = torch.tensor([0.9, 0.1, 0.2, 0.8])  # same ranking for both ligands
+    r = ligand_specificity_gain([blind, blind], y, ["p", "p"], k=1)
+    # top-1 is residue 0: own hits (1, 0), other hits (0, 1) -> LSG = mean(1-0, 0-1) = 0
+    assert r["lsg"] == 0.0 and r["n_pairs"] == 2 and r["n_proteins"] == 1
+    oracle = [y[0].double(), y[1].double()]  # each ranking puts its own site first
+    r = ligand_specificity_gain(oracle, y, ["p", "p"], k=1)
+    assert r["lsg"] == 1.0 and r["own"] == 1.0 and r["other"] == 0.0
+    # single-ligand proteins are skipped
+    assert ligand_specificity_gain([blind], [y[0]], ["q"], k=1)["n_pairs"] == 0

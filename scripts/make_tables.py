@@ -194,21 +194,63 @@ def t_esm_probe(seed: int, pub: dict) -> tuple[list[str], list[list[str]]]:
     fus = pub["interactbind_table2_id"]["FusionDTI"]
     fus_ood = pub["interactbind_fusiondti_ood"]
     rows = []
-    named = [("ID, FASTA-grouped, fold 0", "id_fold0"), ("ID, leak-free, fold 0", "id_lc30_fold0")]
-    for name, s in [*named, *[(o, o) for o in OOD]]:
-        p1 = fus["brhr1"] if s == "id_fold0" else None
-        p5 = fus["brhr5"] if s == "id_fold0" else get(fus_ood, f"{s}/brhr5")
+    for name, sp in [(ID_EXACT, ID), (ID_LC30, LC30), *[(o, [o]) for o in OOD]]:
+        p1 = fus["brhr1"] if sp is ID else None
+        p5 = fus["brhr5"] if sp is ID else get(fus_ood, f"{sp[0]}/brhr5")
         rows.append([
             name,
-            cell("esm_probe", "probe/brhr@1", [s], seed),
-            cell("esm_probe", "probe/brhr@5", [s], seed),
-            cell("homology", "localization/knn/brhr@1", [s], seed),
-            cell("homology", "localization/knn/brhr@5", [s], seed),
-            cell("esm_probe", "random_analytic/brhr@1", [s], seed),
-            cell("esm_probe", "random_analytic/brhr@5", [s], seed),
+            cell("esm_probe", "probe/brhr@1", sp, seed),
+            cell("esm_probe", "probe/brhr@5", sp, seed),
+            cell("homology", "localization/knn/brhr@1", sp, seed),
+            cell("homology", "localization/knn/brhr@5", sp, seed),
+            cell("esm_probe", "random_analytic/brhr@1", sp, seed),
+            cell("esm_probe", "random_analytic/brhr@5", sp, seed),
             f"{p1:.1f}" if p1 is not None else "—",
             f"{p5:.1f}" if p5 is not None else "—",
         ])  # fmt: skip
+    return h, rows
+
+
+def t_lsg(seed: int) -> tuple[list[str], list[list[str]]]:
+    h = ["split", "pairs (proteins)", "kNN LSG@1", "kNN+ligand LSG@1", "ceiling LSG@1",
+         "kNN+ligand LSG@5", "ceiling LSG@5"]  # fmt: skip
+    rows = []
+    for name, sp in [(ID_EXACT, ID), (ID_LC30, LC30), *[(o, [o]) for o in OOD]]:
+        L = "ligand_specificity"
+        n = [get(load("homology", s, seed), f"{L}/@1/knn") for s in sp]
+        n = [x for x in n if x]
+        counts = f"{sum(x['n_pairs'] for x in n)} ({sum(x['n_proteins'] for x in n)})" if n else "—"
+        rows.append([
+            name, counts,
+            cell("homology", f"{L}/@1/knn/lsg", sp, seed),
+            cell("homology", f"{L}/@1/knn_lig/lsg", sp, seed),
+            cell("homology", f"{L}/@1/own_sites_ceiling/lsg", sp, seed),
+            cell("homology", f"{L}/@5/knn_lig/lsg", sp, seed),
+            cell("homology", f"{L}/@5/own_sites_ceiling/lsg", sp, seed),
+        ])  # fmt: skip
+    return h, rows
+
+
+def seed_cell(prefix: str, path: str, splits: list[str], seeds: list[int]) -> str:
+    """Mean ± std over seeds of the fold-averaged value."""
+    per_seed = []
+    for sd in seeds:
+        v = [get(load(prefix, s, sd), path) for s in splits]
+        v = [x for x in v if x is not None]
+        if len(v) == len(splits):
+            per_seed.append(100 * float(np.mean(v)))
+    if len(per_seed) < 2:
+        return "—"
+    return f"{np.mean(per_seed):.1f} ± {np.std(per_seed, ddof=1):.1f} (n={len(per_seed)})"
+
+
+def t_size_matched_seeds(seeds: list[int]) -> tuple[list[str], list[list[str]]]:
+    h = ["split", "size-matched ligand-only GBM AUROC (mean ± std over sampling seeds)"]
+    rows = []
+    for name, sp in [(ID_EXACT, ID), (ID_LC30, LC30), *[(o, [o]) for o in OOD]]:
+        rows.append(
+            [name, seed_cell("ligand_audit", "size_matched/ligand_only_gbm/auroc", sp, seeds)]
+        )
     return h, rows
 
 
@@ -247,6 +289,8 @@ def main() -> int:
         "T_pair_models_auroc": t_pair_models(args.seed),
         "T_esm_probe_brhr": t_esm_probe(args.seed, pub),
         "T_global_identity": t_global_identity(args.seed),
+        "T_ligand_specificity_gain": t_lsg(args.seed),
+        "T_size_matched_seeds": t_size_matched_seeds([0, 1, 2]),
     }
     md = []
     for name, (h, rows) in specs.items():

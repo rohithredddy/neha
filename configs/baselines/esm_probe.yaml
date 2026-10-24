@@ -3,7 +3,8 @@ base: lookup.yaml
 name: esm_probe
 esm_model: esm2_t6_8M_UR50D   # spec's 150M is ~9 h on this CPU; 8M ~1.5 h for the probe subset
 esm_root: data/processed/esm
-probe_splits: [id_fold0, id_lc30_fold0, p_ood_25, p_ood_28, p_ood_31, p_ood_33]
+probe_splits: [id_fold0, id_lc30_fold0, p_ood_25, p_ood_28, p_ood_31, p_ood_33,  # append only: index seeds the rng
+               id_fold1, id_fold2, id_fold3, id_fold4, id_lc30_fold1, id_lc30_fold2, id_lc30_fold3]
 n_train_seqs: 2000            # seeded sample of annotated train FASTAs per split
 neg_per_pos: 3                # residue subsampling for the fit (ranking is per protein)
 logreg: {C: 1.0, max_iter: 2000}

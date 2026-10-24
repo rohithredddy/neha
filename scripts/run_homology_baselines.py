@@ -38,6 +38,7 @@ from safedti.baselines.homology import (
 )
 from safedti.baselines.lookup import localization_metrics
 from safedti.data.esm_cache import seq_key
+from safedti.metrics.localization import ligand_specificity_gain
 from safedti.utils.config import load_config
 from safedti.utils.io import write_result
 from safedti.utils.seeding import seed_everything
@@ -198,7 +199,23 @@ def run_split(name: str, cfg: dict, rng: np.random.Generator) -> dict:
             "leave_one_out": localization_metrics(loo, ys, ks, chunk),
             "random_analytic": random_expected(sub, ks),
         }
-    return {"split_audit": audit, "localization": loc, "ligand_agnostic_oracle": oracle}
+
+    # ---- ligand specificity (LSG@K) on proteins with >= 2 annotated test ligands -------------
+    groups = ev["fasta"].tolist()
+    own_sites = [add_noise(np.asarray(t, dtype=np.float64), rng, 0.5) for t in y]
+    lsg = {
+        f"@{k}": {
+            **{v: ligand_specificity_gain(s, y, groups, k) for v, s in variants.items()},
+            "own_sites_ceiling": ligand_specificity_gain(own_sites, y, groups, k),
+        }
+        for k in ks
+    }
+    return {
+        "split_audit": audit,
+        "localization": loc,
+        "ligand_agnostic_oracle": oracle,
+        "ligand_specificity": lsg,
+    }
 
 
 def main() -> int:

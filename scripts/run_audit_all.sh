@@ -17,6 +17,9 @@ fi
 
 $PY scripts/run_lookup_baselines.py --seed "$SEED"
 $PY scripts/run_ligand_audit.py --seed "$SEED"          # writes size-matched subsets used below
+# extra sampling seeds for the size-matched subsets (GBMs themselves are seed-independent)
+SM="id_fold0 id_fold1 id_fold2 id_fold3 id_fold4 id_lc30_fold0 id_lc30_fold1 id_lc30_fold2 id_lc30_fold3 p_ood_25 p_ood_28 p_ood_31 p_ood_33"
+for s in 1 2; do $PY scripts/run_ligand_audit.py --seed "$s" --splits $SM; done
 $PY scripts/run_homology_baselines.py --seed "$SEED"
 $PY scripts/run_pair_models.py --seed "$SEED"
 $PY scripts/run_esm_probe.py --seed "$SEED" --select

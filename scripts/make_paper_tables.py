@@ -64,18 +64,16 @@ def localization(seed: int, pub: dict) -> str:
     t2 = pub["interactbind_table2_id"]["FusionDTI"]
     rows = []
     for name, sp in GROUPS:
-        probe = ["id_fold0"] if sp is ID else (["id_lc30_fold0"] if sp is LC30 else sp)
         p1 = t2["brhr1"] if sp is ID else None
         p5 = t2["brhr5"] if sp is ID else (get(fus, f"{sp[0]}/brhr5") if sp[0] in OOD else None)
-        mark = "$^d$" if sp in (ID, LC30) else ""
         rows.append([
             name,
             cell("homology", "localization/random_analytic/brhr@1", sp, seed),
             cell("homology", "localization/random_analytic/brhr@5", sp, seed),
             cell("homology", "localization/knn/brhr@1", sp, seed),
             cell("homology", "localization/knn/brhr@5", sp, seed),
-            cell("esm_probe", "probe/brhr@1", probe, seed) + mark,
-            cell("esm_probe", "probe/brhr@5", probe, seed) + mark,
+            cell("esm_probe", "probe/brhr@1", sp, seed),
+            cell("esm_probe", "probe/brhr@5", sp, seed),
             cell("homology", "ligand_agnostic_oracle/leave_one_out/brhr@1", sp, seed),
             fmt(p1), fmt(p5),
         ])  # fmt: skip
@@ -117,6 +115,22 @@ def leakage_id(seed: int) -> str:
     return tabular("lccccc", head, rows)
 
 
+def lsg(seed: int) -> str:
+    rows = []
+    for name, sp in GROUPS:
+        L = "ligand_specificity"
+        rows.append([
+            name,
+            cell("homology", f"{L}/@1/knn/lsg", sp, seed),
+            cell("homology", f"{L}/@1/knn_lig/lsg", sp, seed),
+            cell("homology", f"{L}/@1/own_sites_ceiling/lsg", sp, seed),
+            cell("homology", f"{L}/@5/knn_lig/lsg", sp, seed),
+            cell("homology", f"{L}/@5/own_sites_ceiling/lsg", sp, seed),
+        ])  # fmt: skip
+    head = ["Split", "kNN@1", "kNN+lig.@1", "Ceiling@1", "kNN+lig.@5", "Ceiling@5"]
+    return tabular("lccccc", head, rows)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--seed", type=int, default=0)
@@ -130,6 +144,7 @@ def main() -> int:
         "localization": localization(args.seed, pub),
         "leakage_ood": leakage_ood(args.seed),
         "leakage_id": leakage_id(args.seed),
+        "lsg": lsg(args.seed),
     }.items():
         (out / f"{name}.tex").write_text(body, encoding="utf-8")
     print(f"tables -> {out}")

@@ -96,3 +96,15 @@
   train FASTAs per split, label = site in ≥ 1 train pair, 3 negatives per positive. It is
   evaluated on ID fold 0 (original and leak-free) and the 4 OOD splits. The SAFE-DTI model
   (02_METHOD_SPEC) still uses 150M; this applies to the N2 probe only.
+- **2026-10-24 — Ligand-Specificity Gain (LSG@K)**, `metrics/localization.py::ligand_specificity_gain`,
+  built on `brhr_per_pair` (BRHR is still implemented once). For pair i of a protein with ≥ 2
+  annotated test ligands: LSG_i = hit@K(r_i, own sites) − mean over the other ligands j of
+  hit@K(r_i, sites of j). Any ligand-blind ranking sums to exactly 0 per protein; this is proven
+  in the docstring and tested. The "own-sites ceiling" ranks each pair's true sites first.
+  Reported for the homology variants. The ESM probe is ligand-blind, so its LSG is 0 by
+  construction.
+- **2026-10-24 — Seeds.** The HistGradientBoosting models do not use `random_state` here: no
+  early stopping, and n < 200k, so binning does not subsample. Re-running them with other seeds
+  is a no-op. Seed variance is reported where randomness exists: size-matched sampling (seeds
+  0/1/2) and the ESM probe's train-protein sample. Fold-to-fold variance is reported throughout,
+  and the ESM probe now covers all ID folds (5 + 4), not fold 0 only.
