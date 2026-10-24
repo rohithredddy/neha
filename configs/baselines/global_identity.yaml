@@ -1,0 +1,11 @@
+# Global (Needleman–Wunsch) identity re-check of the protein-OOD splits
+# (scripts/run_global_identity_audit.py). InteractBind defines its OOD splits by global NW
+# similarity (arXiv 2605.24045); our first audit used MMseqs2 local identity. DECISIONS 2026-10-24.
+base: homology.yaml
+name: global_identity
+max_accept: 20            # MMseqs2 candidates retrieved per test sequence
+n_candidates: 10          # top hits (by bit score) re-aligned globally
+gap_open: -10.0           # EMBOSS needle defaults
+gap_extend: -0.5
+background_pairs: 1000    # random test x train pairs: what "unrelated" scores under NW
+global_splits: [p_ood_25, p_ood_28, p_ood_31, p_ood_33]

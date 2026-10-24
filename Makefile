@@ -7,7 +7,7 @@ DATA ?= ib_id
 export TORCH_HOME ?= D:/safedti/torch_cache
 export HF_HOME ?= D:/safedti/hf_home
 
-.PHONY: setup verify-data test lint train eval tables
+.PHONY: setup verify-data test lint train eval tables audit
 
 setup:
 	uv venv --python 3.11 .venv
@@ -32,3 +32,6 @@ eval:
 
 tables:
 	$(PY) scripts/make_tables.py
+
+audit:
+	PY=$(PY) SEED=$(SEED) bash scripts/run_audit_all.sh

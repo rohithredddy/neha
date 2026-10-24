@@ -1,0 +1,11 @@
+# Leak-defined component split (scripts/make_component_splits.py). DECISIONS 2026-10-17.
+mmseqs: D:/safedti/tools/mmseqs/mmseqs.bat
+workdir: D:/safedti/work/mmseqs
+sensitivity: 7.5          # same as the audit search
+max_seqs: 300
+max_accept: 50            # edges per sequence kept; connectivity needs only one path
+threads: 12
+min_identity: 0.3
+min_cov_either: 0.8       # same coverage rule as the audit's qcov view, in either direction
+folds: 4                  # 5 impossible: largest component = 23.8% of rows (DECISIONS 2026-10-17)
+out: data/processed/interactbind/id_lc30_folds.parquet

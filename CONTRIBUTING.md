@@ -65,10 +65,11 @@ external tool, or anything the spec is silent about. Never guess on anything aff
 reported number.
 
 ## Current status
-<!-- Update at the end of every session. -->
-- Milestone: M0 done · M1 done (see docs/07_DATA_FINDINGS_M1.md) · M2 core metrics done
-- Last run: scripts/verify_interactbind.py --seed 0 (2026-10-11), 12 tests passing
-- Known issues: no CUDA GPU locally (CPU-first plan; cloud GPU only for the full ID matrix)
-- Storage: `data/` is a junction to D:\safedti\data; caches on D: via Makefile env vars
-- Open questions: which cloud GPU (Kaggle/Colab) for ESM precompute + training
-- Read `docs/06_RESEARCH_UPDATE_2026-10.md` first: novelty re-positioned to N1–N3; residue-level only
+- Milestone: M0 done · M1 done (docs/07) · M2 core metrics done · **N2 benchmark audit done
+  (CPU only; docs/09_BENCHMARK_AUDIT.md)**. M3–M9 model work blocked on compute (see below).
+- Reproduce the audit: `make audit` (scripts/run_audit_all.sh, ~2–3 h CPU).
+- Known issues: no GPU and no budget; CPU runs must fit ~4 h. DrugBAN on this CPU is ~102 min/epoch,
+  so published models are not retrained (DECISIONS 2026-10-23). The laptop sleeps during long runs.
+- Storage: `data/` is a junction to D:\safedti\data; caches on D: via Makefile env vars.
+  MMseqs2 18-8cc5c at D:/safedti/tools. The DrugBAN timing env is at D:/safedti/envs (not used by the project).
+- Read `docs/06_RESEARCH_UPDATE_2026-10.md` and `docs/09_BENCHMARK_AUDIT.md` first.

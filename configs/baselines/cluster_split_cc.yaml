@@ -1,0 +1,5 @@
+# Connected-component variant (DECISIONS 2026-10-17): set-cover clusters (cluster_split.yaml)
+# leaked — 34% of id_c30 fold-0 test rows kept a >=90%-identity, >=80%-coverage train neighbour.
+base: cluster_split.yaml
+cluster_mode: 1
+out: data/processed/interactbind/id_cc30_folds.parquet

@@ -1,0 +1,11 @@
+# Learned pair models on CPU (scripts/run_pair_models.py). DECISIONS 2026-10-23.
+base: lookup.yaml
+name: pair_models
+ligand_fp: {radius: 2, n_bits: 1024}       # Morgan bits
+protein_features: [aac, dpc]               # amino-acid (20) + dipeptide (400) composition
+variants: [ligand_only, protein_only, pair]
+gbm: {max_iter: 300, learning_rate: 0.1, max_leaf_nodes: 31, early_stopping: false}
+size_matched_dir: data/processed/audit/size_matched   # from run_ligand_audit.py (same seed)
+pair_splits: [id_fold0, id_fold1, id_fold2, id_fold3, id_fold4,
+              id_lc30_fold0, id_lc30_fold1, id_lc30_fold2, id_lc30_fold3,
+              p_ood_25, p_ood_28, p_ood_31, p_ood_33]

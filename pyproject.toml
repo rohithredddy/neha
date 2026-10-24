@@ -16,6 +16,10 @@ dependencies = [
     "scikit-learn>=1.5",
     "rdkit>=2024.3",
     "datasets>=2.20",
+    "scipy>=1.13",
+    "biopython>=1.84",
+    "matplotlib>=3.9",
+    "fair-esm>=2.0",
 ]
 
 [project.optional-dependencies]

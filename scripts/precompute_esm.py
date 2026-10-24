@@ -5,6 +5,9 @@ Order: OOD-split sequences first (test/val, then train), then the rest of the ID
 OOD experiments can start before the run finishes.
 
     python scripts/precompute_esm.py --model esm2_t30_150M_UR50D --out data/processed/esm
+    python scripts/precompute_esm.py ... --device cuda      # Kaggle/Colab GPU; still fp32
+
+The model always runs in fp32 (also on GPU) so CPU- and GPU-computed files are interchangeable.
 """
 
 from __future__ import annotations
@@ -54,8 +57,9 @@ def clean(seq: str, valid: set[str]) -> tuple[str, int]:
 @torch.inference_mode()
 def embed(model, converter, layer: int, seqs: list[str]) -> list[np.ndarray]:
     _, _, toks = converter([(str(i), s) for i, s in enumerate(seqs)])
-    rep = model(toks, repr_layers=[layer])["representations"][layer]
-    return [rep[i, 1 : len(s) + 1].float().numpy() for i, s in enumerate(seqs)]
+    device = next(model.parameters()).device
+    rep = model(toks.to(device), repr_layers=[layer])["representations"][layer]
+    return [rep[i, 1 : len(s) + 1].float().cpu().numpy() for i, s in enumerate(seqs)]
 
 
 def save_atomic(path: Path, x: np.ndarray) -> None:
@@ -71,28 +75,40 @@ def main() -> int:
     ap.add_argument("--out", default="data/processed/esm")
     ap.add_argument("--token-budget", type=int, default=4096, help="residues per batch")
     ap.add_argument("--limit", type=int, default=0, help="only first N sequences (testing)")
+    ap.add_argument("--seqs-file", help="embed only these sequences (one per line)")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--device", default="cpu", help="cpu or cuda (fp32 either way)")
     args = ap.parse_args()
     seed_everything(args.seed)
 
     import esm
 
     model, alphabet = getattr(esm.pretrained, args.model)()
-    model.eval()
+    model = model.eval().to(args.device)
     layer = model.num_layers
     converter = alphabet.get_batch_converter()
     valid = {t for t in alphabet.all_toks if len(t) == 1 and t.isalpha()}
 
     ranked = ordered_unique_sequences()
+    if args.seqs_file:
+        wanted = set(Path(args.seqs_file).read_text(encoding="ascii").split())
+        ranked = [r for r in ranked if r[1] in wanted]
+        assert len(ranked) == len(wanted), "seqs-file holds sequences not in InteractBind"
     if args.limit:
         ranked = ranked[: args.limit]
     seqs = [s for _, s in ranked]
     # Within a priority group, sort by length so batches carry little padding.
-    todo = [s for _, s in sorted(ranked, key=lambda t: (t[0], len(t[1])))
-            if not cache_path(args.out, args.model, s).exists()]
+    todo = [
+        s
+        for _, s in sorted(ranked, key=lambda t: (t[0], len(t[1])))
+        if not cache_path(args.out, args.model, s).exists()
+    ]
     total_res = sum(len(s) for s in todo)
-    print(f"{len(seqs)} unique sequences, {len(seqs) - len(todo)} cached, {len(todo)} to do "
-          f"({total_res:,} residues), threads={torch.get_num_threads()}", flush=True)
+    print(
+        f"{len(seqs)} unique sequences, {len(seqs) - len(todo)} cached, {len(todo)} to do "
+        f"({total_res:,} residues), threads={torch.get_num_threads()}",
+        flush=True,
+    )
 
     n_bad_seqs, n_bad_res = 0, 0
     t0, done_res, last_log = time.time(), 0, 0.0
@@ -105,16 +121,20 @@ def main() -> int:
         if time.time() - last_log > 60:
             el = time.time() - t0
             eta = el / done_res * (total_res - done_res) / 3600
-            print(f"[{time.strftime('%H:%M:%S')}] {done_res:,}/{total_res:,} residues "
-                  f"({100 * done_res / total_res:.1f}%) elapsed {el / 3600:.2f} h, "
-                  f"ETA {eta:.2f} h", flush=True)
+            print(
+                f"[{time.strftime('%H:%M:%S')}] {done_res:,}/{total_res:,} residues "
+                f"({100 * done_res / total_res:.1f}%) elapsed {el / 3600:.2f} h, "
+                f"ETA {eta:.2f} h",
+                flush=True,
+            )
             last_log = time.time()
 
     # Short sequences: keep the given priority order, batch consecutive ones by token budget.
     batch: list[str] = []
     for s in short + [None]:  # type: ignore[list-item]
-        if s is not None and (not batch or (len(batch) + 1) * max(map(len, batch + [s]))
-                              <= args.token_budget):
+        if s is not None and (
+            not batch or (len(batch) + 1) * max(map(len, batch + [s])) <= args.token_budget
+        ):
             batch.append(s)
             continue
         if batch:
@@ -142,11 +162,18 @@ def main() -> int:
         progress(len(s))
 
     manifest = {
-        "model": args.model, "layer": layer, "dim": int(model.embed_dim), "dtype": "float16",
-        "n_sequences": len(seqs), "seqs_with_unknown_tokens": int(n_bad_seqs),
-        "unknown_residues_mapped_to_X": int(n_bad_res), "n_long_windowed": len(long_),
+        "model": args.model,
+        "layer": layer,
+        "dim": int(model.embed_dim),
+        "dtype": "float16",
+        "device_this_run": args.device,
+        "n_sequences": len(seqs),
+        "seqs_with_unknown_tokens": int(n_bad_seqs),
+        "unknown_residues_mapped_to_X": int(n_bad_res),
+        "n_long_windowed": len(long_),
         "window": {"max_len": 1022, "stride": 511, "merge": "mean"},
-        "wall_time_s_this_run": time.time() - t0, "finished": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "wall_time_s_this_run": time.time() - t0,
+        "finished": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "keys_sample": [seq_key(s) for s in seqs[:3]],
     }
     Path(args.out, args.model).mkdir(parents=True, exist_ok=True)

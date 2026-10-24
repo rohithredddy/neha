@@ -1,0 +1,16 @@
+# Homology-transfer residue baselines + split audit (scripts/run_homology_baselines.py).
+base: lookup.yaml
+name: homology
+mmseqs: D:/safedti/tools/mmseqs/mmseqs.bat   # MMseqs2 release 18-8cc5c (DECISIONS 2026-10-17)
+workdir: D:/safedti/work/mmseqs              # no spaces allowed (MMseqs2 on Windows)
+sensitivity: 7.5
+max_seqs: 300
+max_accept: 10            # alignments kept per query (top_m <= max_accept)
+threads: 12
+top_m: 5                  # hits used by the kNN variants (by bit score)
+tie_noise: 1.0e-6         # overrides lookup.yaml; must stay below the smallest positive score
+ligand_fp: {radius: 2, n_bits: 2048}
+ligand_weight_floor: 0.01 # added to Tanimoto so a target's weights never all vanish
+identity_bins: [0.0, 0.3, 0.5, 0.9, 0.999, 1.01]   # nearest-train fident strata
+identity_thresholds: [0.25, 0.28, 0.31, 0.33, 0.5, 0.9, 0.999]
+qcov_min: 0.8             # second audit view: hits covering >= 80% of the test sequence

@@ -1,0 +1,11 @@
+# Binary-task shortcut audit (scripts/run_ligand_audit.py).
+base: lookup.yaml
+name: ligand_audit
+# Single RDKit descriptors scored directly (no training): rdkit.Chem.Descriptors names.
+single_descriptors: [HeavyAtomCount, MolWt, NumRotatableBonds, RingCount, MolLogP, NumHDonors,
+                     NumHAcceptors, TPSA]
+# Ligand-only model: HistGradientBoosting on the full RDKit 2D descriptor list (no protein input).
+gbm: {max_iter: 300, learning_rate: 0.1, max_leaf_nodes: 31, early_stopping: false}
+# Size-matched test subset: exact heavy-atom-count bins, equal positives/negatives per bin.
+size_match_column: HeavyAtomCount
+size_matched_dir: data/processed/audit/size_matched

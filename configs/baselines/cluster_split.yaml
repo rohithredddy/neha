@@ -1,0 +1,11 @@
+# Proposed cluster-grouped ID split (scripts/make_cluster_splits.py). DECISIONS 2026-10-17.
+mmseqs: D:/safedti/tools/mmseqs/mmseqs.bat
+workdir: D:/safedti/work/mmseqs
+min_seq_id: 0.3
+coverage: 0.8
+cov_mode: 0          # coverage of both query and target
+sensitivity: 7.5
+threads: 12
+folds: 5
+out: data/processed/interactbind/id_c30_folds.parquet
+cluster_mode: 0      # 0 = greedy set cover (MMseqs2 default); 1 = connected components

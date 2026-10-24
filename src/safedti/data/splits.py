@@ -41,7 +41,8 @@ def grouped_kfold(
         rest = np.array(sorted(g for g, f in fold_of.items() if f != k))
         rest = rest[rng.permutation(len(rest))]
         val_groups = set(rest[: int(round(val_frac * len(rest)))])
-        split = np.where(out["fold"] == k, "test",
-                         np.where(groups.isin(val_groups), "val", "train"))
+        split = np.where(
+            out["fold"] == k, "test", np.where(groups.isin(val_groups), "val", "train")
+        )
         out[f"split_{k}"] = split
     return out

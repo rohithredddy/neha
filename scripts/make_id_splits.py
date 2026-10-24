@@ -46,9 +46,11 @@ def main() -> int:
             **{n: int((s == n).sum()) for n in ("train", "val", "test")},
             "test_pos_frac": round(float(out["label"][s == "test"].mean()), 4),
             "test_rows_with_fasta_in_train": round(
-                float(df["fasta"][s == "test"].isin(train_fasta).mean()), 4),
-            "test_smiles_in_train": round(float(df["smiles"][s == "test"].isin(
-                set(df["smiles"][s == "train"])).mean()), 4),
+                float(df["fasta"][s == "test"].isin(train_fasta).mean()), 4
+            ),
+            "test_smiles_in_train": round(
+                float(df["smiles"][s == "test"].isin(set(df["smiles"][s == "train"])).mean()), 4
+            ),
         }
     print(json.dumps(stats, indent=2))
     OUT.with_suffix(".json").write_text(json.dumps(stats, indent=2))

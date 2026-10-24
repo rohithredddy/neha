@@ -1,0 +1,16 @@
+# Training-free lookup baselines (src/safedti/baselines/lookup.py, scripts/run_lookup_baselines.py).
+name: lookup
+site_column: Overall_binding_site
+# Localization is evaluated on annotated positives: label == 1 and >= 1 binding residue.
+eval_labels: [1]
+# Rows used to build the train site table: any label with >= 1 binding residue.
+table_labels: [0, 1]
+brhr_k: [1, 3, 5]
+tie_noise: 0.5          # < 1, so integer counts never reorder
+binary_smoothing: 1.0   # pseudo-counts toward the global train positive rate
+binary_keys: [fasta, uniprot_id, smiles]
+chunk: 512
+splits: [p_ood_25, p_ood_28, p_ood_31, p_ood_33, id_fold0, id_fold1, id_fold2, id_fold3, id_fold4,
+         id_c30_fold0, id_c30_fold1, id_c30_fold2, id_c30_fold3, id_c30_fold4,
+         id_cc30_fold0, id_cc30_fold1, id_cc30_fold2, id_cc30_fold3, id_cc30_fold4,
+         id_lc30_fold0, id_lc30_fold1, id_lc30_fold2, id_lc30_fold3]  # append only: index seeds the rng

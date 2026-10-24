@@ -12,7 +12,7 @@ their Table 2).
 **Localization:** BRHR@1 / @3 / @5 (primary, their definition exactly), plus Precision@n⁺,
 Recall@n⁺, residue AUPRC. Per-interaction-type BRHR@5 across all six types. Atom-side
 localization: out of scope (public data is residue-level only).
-**Ligand-agnostic ceiling (N2):** BRHR@K of an ESM-2 linear probe with no ligand input, plus
+**Ligand-agnostic ceiling (N2):** BRHR@K of an ESM-2 linear probe with no ligand input (ESM-2 8M on CPU, DECISIONS 2026-10-23), plus
 ligand-sensitivity of the residue ranking across ligands of the same protein.
 
 **Controls, mandatory:** random ranking, a hydrophobicity-only heuristic, and a

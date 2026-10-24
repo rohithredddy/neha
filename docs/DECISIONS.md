@@ -31,3 +31,68 @@
   `D:/safedti/hf_home`, both via Makefile env vars. Code paths stay `data/...`. This makes the
   ESM-2 150M fp16 cache (~24 GB, measured estimate) feasible locally, so the CPU-first plan runs
   ESM precompute locally (~9 h measured estimate).
+- **2026-10-16 — Training-free lookup baselines (N2 audit).** `scripts/run_lookup_baselines.py`.
+  Residue lookup uses **exact-FASTA matches only**, so residue j is the same residue in train and
+  test with no alignment (rule 4). Homology transfer via alignment is a separate later baseline.
+  Localization is evaluated on annotated positives (label 1, ≥ 1 site), the same set as the M1
+  random baseline. The site table uses every annotated train row (labels 0 and 1), because ID
+  negatives carry real sites and a model sees them too. Binary priors are smoothed with 1
+  pseudo-count toward the global train rate. Ligand heavy-atom count (RDKit) is a no-data scorer.
+- **2026-10-17 — Scope: benchmark audit first.** User asked to complete the project; training
+  (N1, N3) needs the ESM cache and a GPU. The CPU-feasible audit study (binary shortcut,
+  homology-transfer localization, split leakage, ligand-agnostic ceiling, proposed fixes) is done
+  first. It also provides the mandatory controls of 05_EXPERIMENTS §1.
+- **2026-10-17 — MMseqs2 18-8cc5c** (win64 zip sha256 `9752087c…cfcbf`, at D:/safedti/tools).
+  Homology search: `easy-search -s 7.5 --max-seqs 300 --max-accept 10 -e 10`. Identity = MMseqs2
+  `fident` of the local alignment, so it can exceed a global-identity split threshold. That is why
+  a coverage-filtered view (qcov ≥ 0.8) is also reported. `--max-accept 10` caps memory on ID
+  (45k sequences); the top-5 kNN draws from those 10.
+- **2026-10-17 — Homology-transfer variants.** nn1 = best hit by bit score, weight 1. knn =
+  top-5 annotated hits, weight = fident. knn_lig = knn with each target's per-row sites weighted
+  by Morgan(r=2, 2048) Tanimoto + 0.01. Tie noise is 1e-6 and asserted below the smallest positive
+  score. The alignment→index map is tested by hand, and every hit is checked against the real
+  sequences at run time.
+- **2026-10-17 — Ligand-agnostic oracle** is a ceiling, not a baseline: it uses TEST labels of
+  other ligands of the same FASTA (leave-one-out). Reported separately and always labelled.
+- **2026-10-17 — Ligand-only model** = sklearn HistGradientBoosting on all RDKit 2D descriptors
+  (fixed hyperparameters in configs/baselines/ligand_audit.yaml, no tuning). This is a trained
+  model, but it never sees the protein.
+- **2026-10-17 — Size-matched evaluation subset** = within each exact heavy-atom count, equally
+  many positives and negatives (seeded). Proposed fix for the binary task. Row ids are saved to
+  data/processed/audit/size_matched/.
+- **2026-10-17 — Proposed cluster split `id_c30`**: MMseqs2 `easy-cluster --min-seq-id 0.3 -c 0.8
+  --cov-mode 0`, then grouped_kfold on clusters. Residual leakage is measured, not assumed, by
+  rerunning the homology audit on it.
+- **2026-10-17 — MMseqs2 clustering splits leak; replaced by a leak-defined component split.**
+  Both `id_c30` (set cover) and `id_cc30` (`--cluster-mode 1`) kept ~34% of test rows with a
+  ≥90%-identity, ≥80%-coverage train neighbour. The likely cause is `-c 0.8 --cov-mode 0`, which
+  requires coverage of BOTH sequences, so fragments never join their parents. This is our setting,
+  not an MMseqs2 bug. New `id_lc30`: all-vs-all search (max-accept 50), an edge when
+  fident ≥ 0.3 and coverage of EITHER sequence ≥ 0.8, then union-find components. The largest
+  component holds 23.8% of rows, so 5 balanced folds are impossible. **User chose 4 folds**
+  (2026-10-17). The c30/cc30 results are kept as evidence of the leak.
+- **2026-10-17 — Low-identity diagnostic** (`scripts/diagnose_low_identity.py`, id_cc30 fold 0).
+  Stratum "<30%" BRHR@1 is real signal, not a bug: no-hit pairs score at random (2.1 vs 5.1), and
+  an amino-acid-type prior scores ≈ random. Part of the stratum is a binning artefact, because
+  strata use the top bit-score hit. Pairs whose top-5 hits are ALL < 30% still reach 41% BRHR@1,
+  and 49% when the alignment covers ≥ 80% of the sequence. Remote homologs carry pocket position.
+- **2026-10-17 — Literature check.** No critique of InteractBind, and no ligand-only, homology or
+  size control was found in InteractBind (arXiv 2605.24045) or ExplainBind (bioRxiv v3, 2026-06-09,
+  which now lists code at github.com/ZhaohanM/ExplainBind). Docking-score size bias is known in
+  general (decoy size matching, heavy-atom normalisation), so we cite it, not claim it.
+  InteractBind defines its OOD splits by **global Needleman–Wunsch similarity**. Our split audit
+  uses MMseqs2 local identity, so the "exceeds nominal threshold" claim is not yet comparable.
+  A global-identity re-check is needed before that claim is made.
+- **2026-10-23 — No GPU, CPU budget ≤ 4 h (user constraint).** DrugBAN was timed on this CPU
+  (commit 9923f8c, default config, leak-free fold 0): 7.1 s/batch, ~102 min/epoch, ~170 h for
+  its 100-epoch protocol. It is not retrained. Instead (user chose A+B):
+  **A — learned pair models**, `scripts/run_pair_models.py`. HistGradientBoosting with fixed
+  hyperparameters on Morgan(r2, 1024 bits) ligand features, AAC+DPC protein features, or both.
+  This tests whether a model given the protein still reduces to the ligand shortcut, on the
+  original and leak-free splits.
+  **B — ligand-agnostic learned residue model**, `scripts/run_esm_probe.py`. Logistic-regression
+  probe on frozen **ESM-2 8M** embeddings (`esm2_t6_8M_UR50D`), not the 150M of the spec. 150M is
+  ~9 h on this CPU and 8M is ~1 h for the probe subset. Probe training uses 2,000 seeded annotated
+  train FASTAs per split, label = site in ≥ 1 train pair, 3 negatives per positive. It is
+  evaluated on ID fold 0 (original and leak-free) and the 4 OOD splits. The SAFE-DTI model
+  (02_METHOD_SPEC) still uses 150M; this applies to the N2 probe only.

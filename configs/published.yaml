@@ -1,0 +1,19 @@
+# Published numbers we compare against (percent). Not our results; never mix into results/.
+# Verified 2026-10-11, see docs/06_RESEARCH_UPDATE_2026-10.md §1–2.
+interactbind_table2_id:   # arXiv 2605.24045 v1, Table 2, ID 5-fold CV (their folds, unpublished)
+  source: https://arxiv.org/html/2605.24045v1
+  MolTrans:          {auroc: 95.1, brhr1: 10.9, brhr3: 17.7, brhr5: 22.4}
+  TransformerCPI:    {auroc: 95.4, brhr1: 10.9, brhr3: 16.7, brhr5: 21.7}
+  HyperAttentionDTI: {auroc: 95.5, brhr1: 12.3, brhr3: 17.7, brhr5: 20.8}
+  PerceiverCPI:      {auroc: 96.9, brhr1: 10.6, brhr3: 13.9, brhr5: 19.9}
+  CAT-DTI:           {auroc: 96.8, brhr1: 12.2, brhr3: 14.8, brhr5: 22.1}
+  DrugBAN:           {auroc: 97.6, brhr1: 15.7, brhr3: 23.9, brhr5: 31.4}
+  GraphBAN:          {auroc: 97.8, brhr1: 16.1, brhr3: 22.9, brhr5: 30.4}
+  FusionDTI:         {auroc: 98.3, brhr1: 21.6, brhr3: 29.6, brhr5: 35.6}
+interactbind_fusiondti_ood:   # same paper, protein-OOD text
+  source: https://arxiv.org/html/2605.24045v1
+  p_ood_25: {auroc: 81.8, brhr5: 28.4}
+  p_ood_33: {auroc: 91.8, brhr5: 30.1}
+explainbind_id:   # bioRxiv 2026.03.03.707476 (not peer reviewed, no code)
+  source: https://www.biorxiv.org/content/10.64898/2026.03.03.707476v1.full
+  ExplainBind: {auroc: 99.3, brhr1: 55.6, brhr5: 74.6}
