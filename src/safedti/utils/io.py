@@ -11,10 +11,12 @@ from typing import Any
 
 
 def git_commit() -> str:
-    """Return the current commit hash, suffixed with '-dirty' if the tree has changes."""
+    """Return the current commit hash, suffixed with "-dirty" if tracked files have changes."""
     try:
         sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        dirty = subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()
+        dirty = subprocess.check_output(
+            ["git", "status", "--porcelain", "--untracked-files=no"], text=True
+        ).strip()
         return sha + ("-dirty" if dirty else "")
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
