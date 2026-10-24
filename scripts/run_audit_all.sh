@@ -27,4 +27,7 @@ $PY scripts/diagnose_low_identity.py --split id_cc30_fold0 --seed "$SEED"
 $PY scripts/run_global_identity_audit.py --seed "$SEED"
 $PY scripts/make_tables.py --seed "$SEED"
 $PY scripts/make_figures.py --seed "$SEED"
+$PY scripts/make_paper_tables.py --seed "$SEED"
+cp results/figures/F2_brhr_by_identity.pdf results/figures/F3_binary_shortcut.pdf \
+   results/figures/F4_localization_without_ligand.pdf paper/figures/
 echo "audit complete"

@@ -8,3 +8,12 @@ __pycache__/
 checkpoints/
 *.pt
 !tests/fixtures/*.pt
+
+# LaTeX build files
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/*.pdf
