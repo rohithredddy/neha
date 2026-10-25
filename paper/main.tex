@@ -40,7 +40,9 @@ scores 98.7 AUROC on the in-distribution task, against 98.3 for the best publish
 learned model given both drug and protein gains at most 3.1 AUROC points over a ligand-only model
 on every split. (ii)~Residue localization is largely solvable without the ligand. Copying binding
 sites from sequence homologs, and a linear probe on a small protein language model that never sees
-the ligand, both match or exceed published interaction models. (iii)~The protein-similarity
+the ligand, both match or exceed published interaction models. A new ligand-specificity gain metric
+shows why BRHR cannot reward ligand awareness: even a perfect ligand-specific ranking beats a
+ligand-blind one by only 18 BRHR@5 points on the in-distribution task. (iii)~The protein-similarity
 out-of-distribution splits leak: on the 33\% split, at least 61\% of test pairs have a training
 protein above the cap by global Needleman--Wunsch identity. Standard 30\% MMseqs2 clustering also
 leaks, because it requires coverage in both directions. We release a leak-defined split that
@@ -132,13 +134,26 @@ None of these reads the ligand unless stated.
   annotated training proteins, mapped through each alignment and weighted by identity. A variant
   re-weights each training pair by Tanimoto similarity of its ligand to the test ligand.
 \item \emph{ESM-2 probe}: logistic regression on frozen ESM-2 8M residue
-  embeddings~\cite{esm2}, trained on 2,000 training proteins per split.
+  embeddings~\cite{esm2}, trained on 2,000 training proteins per split and evaluated on every
+  fold.
 \item \emph{Ligand-agnostic oracle}: a ceiling, not a baseline, because it uses test labels. Each
   residue is ranked by its binding frequency over the \emph{other} test ligands of the same protein.
 \end{itemize}
 BRHR uses a single unit-tested implementation of the benchmark's definition. The mapping from
 alignment columns to residue indices is unit-tested, and every alignment is checked against the
 sequences at run time.
+
+\subsection{Ligand-specificity gain}
+BRHR scores each pair in isolation, so it cannot tell whether a ranking depends on the ligand. We
+propose the \emph{ligand-specificity gain}. For pair $i$ of a protein with $m\geq2$ annotated test
+ligands, let $r_i$ be the model's ranking for that pair, $y_j$ the binding sites of ligand $j$, and
+$h_K(r,y)$ the BRHR@$K$ hit of ranking $r$ against sites $y$. Then
+\begin{equation}
+\mathrm{LSG}_i@K = h_K(r_i, y_i) - \frac{1}{m-1}\sum_{j\neq i} h_K(r_i, y_j).
+\end{equation}
+LSG@$K$ is the mean over all such pairs. A ligand-blind method gives every ligand of a protein the
+same ranking, so its LSG sums to exactly zero over each protein. The \emph{ceiling} ranks each
+pair's own true sites first; it shows how much ligand awareness BRHR@$K$ can reward at all.
 
 \subsection{Split audit}
 For each test pair we find the nearest training protein in two ways. The first is MMseqs2 local
@@ -150,8 +165,11 @@ a background, we also align 1,000 random test--train pairs.
 
 \subsection{Reproducibility}
 Every number in this paper is read from a JSON results file that records the code commit and full
-configuration. Seed~0 is used throughout. A second full run reproduced all 5,305 reported numbers
-exactly. Total compute was about three hours on a 10-thread laptop CPU, with no GPU.
+configuration. A second full run of the core audit reproduced all 5,305 of its numbers exactly.
+Randomness enters only through tie-breaking, size-matched subset sampling and the probe's training
+sample; the gradient-boosted models use no randomness at our settings. We report variation across
+folds throughout, and across three sampling seeds for the size-matched subsets. Total compute was
+about five hours on a 10-thread laptop CPU, with no GPU.
 
 \section{Results}
 \subsection{The binary label is close to a ligand-size threshold}
@@ -163,7 +181,8 @@ model scores 81.9 on FASTA-grouped ID but 64.1 on the leak-free split and near c
 splits, so its ID signal comes from homology leakage. Adding protein features to ligand features
 changes AUROC by at most 3.1 points. Size-matching is necessary but not sufficient: models still
 reach 93.1--97.1 on ID and 64.5--79.8 on OOD, because other ligand chemistry still predicts the
-docking label.
+docking label. This is stable across sampling seeds: over three seeds, the ligand-only model's
+size-matched AUROC has a standard deviation of at most 0.8.
 
 \begin{table*}[t]
 \caption{Binary task, test AUROC (\%). ID rows are mean $\pm$ std over folds.}
@@ -186,9 +205,9 @@ results.
 \item \emph{OOD splits.} On p\_ood\_28--33, homology transfer reaches 56--70 BRHR@5, against
   FusionDTI's 30.1 on p\_ood\_33. FusionDTI wins on p\_ood\_25 (28.4 vs.\ 14.3). That split pairs
   short training proteins with long test proteins.
-\item \emph{ESM-2 probe.} Trained in about 2 minutes, it reaches 57.8 BRHR@5 on ID fold~0, 56.5 on
-  p\_ood\_33 and 26.6 on p\_ood\_25. On p\_ood\_25 it beats homology transfer, so it is more than
-  lookup.
+\item \emph{ESM-2 probe.} Trained in about 2 minutes per fold, it reaches 59.3 BRHR@5 on ID,
+  53.1 on the leak-free split, 56.5 on p\_ood\_33 and 26.6 on p\_ood\_25. On the leak-free split and
+  on p\_ood\_25 it beats homology transfer at @5, so it is more than lookup.
 \item \emph{Ligand information.} Weighting homologs by ligand similarity improves BRHR@1 by at most
   4.1 points.
 \item \emph{Ceiling.} The ligand-agnostic oracle reaches 60--69 BRHR@1 on every split, so a method
@@ -203,15 +222,41 @@ results.
 \\[2pt]
 \footnotesize{Rand.: analytic random ranking. Hom.: homology-transfer kNN (no training). Probe:
 ESM-2 8M linear probe (no ligand input). FDTI: FusionDTI. $^c$Published~\cite{interactbind2026}.
-$^d$Fold~0 only. $^e$Uses test labels of other ligands of the same protein; an upper bound for
-ligand-blind rankings.}
+$^e$Uses test labels of other ligands of the same protein; an upper bound for ligand-blind
+rankings.}
 \end{table*}
+
+\subsection{BRHR barely rewards ligand awareness}
+Table~\ref{tab:lsg} reports the ligand-specificity gain on proteins with at least two annotated test
+ligands (11,607 ID pairs from 3,197 proteins).
+\begin{itemize}
+\item \emph{The ceiling is low.} Ranking each pair's own true sites first gains 45.6 points at
+  BRHR@1 over the same ranking scored against other ligands' sites, but only 18.3 points at
+  BRHR@5 on ID (6.3--30.6 on OOD). Ligands of one protein share most of their binding residues, so
+  a ligand-blind model loses little.
+\item \emph{Ligand weighting adds almost nothing.} Weighting homologs by ligand similarity yields at
+  most 2.5 points of LSG@1, and 0.2 on the leak-free split.
+\end{itemize}
+High BRHR is therefore mostly pocket recall. Any claim that a model localizes \emph{interactions}
+should report LSG next to BRHR.
+
+\begin{table}[t]
+\caption{Ligand-specificity gain LSG@$K$ (points of BRHR).}
+\label{tab:lsg}
+\centering
+\resizebox{\columnwidth}{!}{\input{tables/lsg.tex}}
+\\[2pt]
+\footnotesize{kNN: ligand-blind homology transfer (0 by construction up to tie-breaking).
+kNN+lig.: homologs re-weighted by ligand similarity. Ceiling: each pair ranks its own true sites
+first.}
+\end{table}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/F4_localization_without_ligand.pdf}
 \caption{BRHR@5 by split for random ranking, the ligand-blind ESM-2 probe, training-free homology
-transfer and published FusionDTI (n/r: not reported). ID values are fold~0.}
+transfer and published FusionDTI (n/r: not reported). ID values are means over folds (5 for
+FASTA-grouped, 4 for leak-free).}
 \label{fig:loc}
 \end{figure*}
 
@@ -291,9 +336,9 @@ against published FusionDTI (n/r: not reported).}
 \item \emph{Evaluate localization on leak-defined protein splits}, built from an either-direction
   coverage graph rather than \texttt{--cov-mode 0} clustering. Evaluate the binary task on
   size-matched subsets, and expect residual ligand-chemistry signal even there.
-\item \emph{BRHR measures pocket recall more than interaction.} Claims that a model ``learns
-  interactions'' need a ligand-sensitivity measure, for example how the residue ranking changes
-  across ligands of the same protein compared with how the ground truth changes.
+\item \emph{Report the ligand-specificity gain next to BRHR.} BRHR measures pocket recall more than
+  interaction, and its ceiling for ligand awareness is low (18 points at @5). Claims that a model
+  ``learns interactions'' should show a positive LSG.
 \item \emph{Docking-derived binary labels encode ligand size.} They should be size-corrected or
   paired with property-matched decoys, as is standard for docking benchmarks~\cite{dude2012}.
 \end{enumerate}
@@ -305,9 +350,11 @@ against published FusionDTI (n/r: not reported).}
   each published model uses.
 \item Our ID folds differ from the unpublished originals, so ID comparisons with published numbers
   are indicative. The OOD comparisons are direct.
-\item The probe uses ESM-2 8M on fold~0 only.
+\item The probe uses the smallest ESM-2 model (8M parameters); larger models would likely score
+  higher, which only strengthens the ligand-blind result.
 \item Global identity is a lower bound computed over candidates.
-\item All results use seed~0.
+\item LSG is defined on proteins with several annotated test ligands, which excludes single-ligand
+  proteins.
 \end{itemize}
 
 \section{Conclusion}

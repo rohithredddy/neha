@@ -1,0 +1,100 @@
+{
+  "name": "esm_probe_id_fold1_0",
+  "git_commit": "6d840718fd5c852884bfe2a9d8d7a7aeaf201c85-dirty",
+  "timestamp": "2026-10-25T09:26:26+0530",
+  "host": "DESKTOP-DTM8V32",
+  "seed": 0,
+  "config": {
+    "name": "esm_probe",
+    "site_column": "Overall_binding_site",
+    "eval_labels": [
+      1
+    ],
+    "table_labels": [
+      0,
+      1
+    ],
+    "brhr_k": [
+      1,
+      3,
+      5
+    ],
+    "tie_noise": 0.5,
+    "binary_smoothing": 1.0,
+    "binary_keys": [
+      "fasta",
+      "uniprot_id",
+      "smiles"
+    ],
+    "chunk": 512,
+    "splits": [
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold0",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_c30_fold0",
+      "id_c30_fold1",
+      "id_c30_fold2",
+      "id_c30_fold3",
+      "id_c30_fold4",
+      "id_cc30_fold0",
+      "id_cc30_fold1",
+      "id_cc30_fold2",
+      "id_cc30_fold3",
+      "id_cc30_fold4",
+      "id_lc30_fold0",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "esm_model": "esm2_t6_8M_UR50D",
+    "esm_root": "data/processed/esm",
+    "probe_splits": [
+      "id_fold0",
+      "id_lc30_fold0",
+      "p_ood_25",
+      "p_ood_28",
+      "p_ood_31",
+      "p_ood_33",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
+    ],
+    "n_train_seqs": 2000,
+    "neg_per_pos": 3,
+    "logreg": {
+      "C": 1.0,
+      "max_iter": 2000
+    },
+    "seqs_file": "data/processed/esm/probe_sequences.txt",
+    "split": "id_fold1"
+  },
+  "metrics": {
+    "n_train_seqs": 2000,
+    "n_train_residues": 86647,
+    "train_pos_frac": 0.25106466467390676,
+    "n_eval_pairs": 5164,
+    "probe": {
+      "brhr@1": 0.24496513605117798,
+      "brhr@3": 0.4604957401752472,
+      "brhr@5": 0.5755228400230408,
+      "precision@npos": 0.18926890598397952,
+      "n_pairs": 5164
+    },
+    "random_analytic": {
+      "brhr@1": 0.04365557540836605,
+      "brhr@3": 0.12406177631248198,
+      "brhr@5": 0.19621147649099327
+    }
+  },
+  "wall_time_s": 46.988513469696045
+}

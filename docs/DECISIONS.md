@@ -108,3 +108,9 @@
   is a no-op. Seed variance is reported where randomness exists: size-matched sampling (seeds
   0/1/2) and the ESM probe's train-protein sample. Fold-to-fold variance is reported throughout,
   and the ESM probe now covers all ID folds (5 + 4), not fold 0 only.
+- **2026-10-25 — `-dirty` tag on the 6d84071 results.** The homology (LSG), size-matched-seed and
+  all-fold probe results are tagged `6d84071…-dirty`. The only uncommitted change while they ran was
+  `scripts/make_figures.py` (F4 now averages over folds; verified with `git diff --stat 6d84071`).
+  That script only plots and writes no results JSON, so the numbers equal those of clean 6d84071.
+  The change is committed right after. Other results are from clean 91d0854; their code did not
+  change.

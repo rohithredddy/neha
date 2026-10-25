@@ -78,8 +78,8 @@
 
 | split | ESM probe @1 | ESM probe @5 | homology kNN @1 | homology kNN @5 | random @1 | random @5 | FusionDTI @1 (publ.) | FusionDTI @5 (publ.) |
 |---|---|---|---|---|---|---|---|---|
-| ID, FASTA-grouped, fold 0 | 23.4 | 57.8 | 58.2 | 76.5 | 4.4 | 19.8 | 21.6 | 35.6 |
-| ID, leak-free, fold 0 | 13.1 | 40.6 | 29.3 | 54.9 | 4.9 | 21.7 | — | — |
+| ID, FASTA-grouped (5 folds) | 24.1 ± 0.9 | 59.3 ± 1.5 | 57.5 ± 0.8 | 77.1 ± 0.7 | 4.5 ± 0.1 | 20.0 ± 0.4 | 21.6 | 35.6 |
+| ID, leak-free components (4 folds, proposed) | 20.1 ± 5.5 | 53.1 ± 10.1 | 21.7 ± 5.2 | 43.5 ± 7.8 | 4.5 ± 0.4 | 20.0 ± 1.6 | — | — |
 | p_ood_25 | 8.5 | 26.6 | 7.4 | 14.3 | 1.5 | 7.3 | — | 28.4 |
 | p_ood_28 | 20.2 | 49.5 | 34.7 | 56.2 | 4.7 | 20.9 | — | — |
 | p_ood_31 | 23.7 | 59.9 | 34.7 | 57.6 | 4.4 | 19.8 | — | — |
@@ -93,5 +93,27 @@
 | p_ood_28 | 28% | 18.0 | 59.5 | 21.3 | 6.6 | 0.0 |
 | p_ood_31 | 31% | 29.0 | 46.2 | 24.4 | 7.8 | 0.1 |
 | p_ood_33 | 33% | 60.7 | 67.4 | 49.3 | 8.5 | 0.5 |
+
+### T_ligand_specificity_gain
+
+| split | pairs (proteins) | kNN LSG@1 | kNN+ligand LSG@1 | ceiling LSG@1 | kNN+ligand LSG@5 | ceiling LSG@5 |
+|---|---|---|---|---|---|---|
+| ID, FASTA-grouped (5 folds) | 11607 (3197) | -0.1 ± 0.3 | 2.5 ± 0.8 | 45.6 ± 1.0 | 2.5 ± 0.4 | 18.3 ± 1.4 |
+| ID, leak-free components (4 folds, proposed) | 11607 (3197) | -0.2 ± 0.0 | 0.2 ± 0.3 | 45.0 ± 1.7 | 0.3 ± 0.4 | 18.3 ± 2.5 |
+| p_ood_25 | 161 (62) | -0.6 | 0.3 | 51.0 | -1.9 | 30.6 |
+| p_ood_28 | 202 (59) | -0.8 | 1.3 | 48.5 | -0.6 | 14.8 |
+| p_ood_31 | 133 (46) | -2.1 | 0.2 | 45.8 | 0.5 | 17.4 |
+| p_ood_33 | 65 (26) | -0.0 | -4.6 | 34.3 | 0.0 | 6.3 |
+
+### T_size_matched_seeds
+
+| split | size-matched ligand-only GBM AUROC (mean ± std over sampling seeds) |
+|---|---|
+| ID, FASTA-grouped (5 folds) | 95.0 ± 0.1 (n=3) |
+| ID, leak-free components (4 folds, proposed) | 91.8 ± 0.1 (n=3) |
+| p_ood_25 | 66.2 ± 0.6 (n=3) |
+| p_ood_28 | 74.0 ± 0.8 (n=3) |
+| p_ood_31 | 73.6 ± 0.5 (n=3) |
+| p_ood_33 | 74.6 ± 0.6 (n=3) |
 
 *oracle LOO uses test labels of other ligands of the same protein (a ceiling).

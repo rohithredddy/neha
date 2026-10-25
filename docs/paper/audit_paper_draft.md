@@ -1,3 +1,6 @@
+> **Superseded (2026-10-25) by `paper/main.tex`**, which adds LSG, all-fold probe results and seed
+> variance. Kept for history.
+
 # What Does InteractBind Measure? Ligand-Size Shortcuts, Sequence Leakage, and Ligand-Blind Baselines in Drug–Target Interaction Benchmarks
 
 *Draft v0.2 (2026-10-24). Target: IEEE BIBM 2027 (short/regular) or a BIBM workshop. Every number

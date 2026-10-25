@@ -1,6 +1,6 @@
 # N2 Benchmark Audit — summary (2026-10-24)
 
-The full write-up is `docs/paper/audit_paper_draft.md`. All numbers are in `results/tables/tables.md`.
+The paper is `paper/main.tex` (IEEE format); `docs/paper/audit_paper_draft.md` is an older draft. All numbers are in `results/tables/tables.md`.
 Reproduce with `make audit` (scripts/run_audit_all.sh, ~2–3 h CPU, no GPU).
 Results were generated at commit `91d0854`. A second full run reproduced all 5,305 numbers exactly.
 
@@ -19,6 +19,12 @@ Results were generated at commit `91d0854`. A second full run reproduced all 5,3
    neighbour. The leak-defined split `id_lc30` (either-direction coverage, connected components,
    4 folds) removes it. Homology transfer still gets 21.7 / 43.5 there, from remote homologs.
 5. **Size-matching removes size, not the shortcut**: ligand-only GBM 91.8–95.0 on size-matched ID.
+   This is stable over 3 sampling seeds (std ≤ 0.8).
+6. **The ESM-2 8M probe, over all folds:** ID 24.1 / 59.3 and leak-free ID 20.1 / 53.1 BRHR@1/@5.
+   On the leak-free split it beats homology at @5 (43.5).
+7. **Ligand-Specificity Gain (LSG, new metric):** even a perfect ligand-specific ranking gains only
+   18.3 BRHR@5 points over ligand-blind on ID (6.3–30.6 on OOD), and 45.6 at @1. Ligand-weighted
+   homology gains ≤ 2.5 points. BRHR is mostly pocket recall.
 
 ## Status of the original plan
 - N1 (grounding transfer) and N3 (selective prediction) need model training on a GPU. They are

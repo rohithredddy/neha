@@ -151,9 +151,12 @@ def f3(seed: int, pub: dict, out: Path) -> None:
 
 
 def f4(seed: int, pub: dict, out: Path) -> None:
-    """BRHR@5 per split, fold 0 for ID (the ESM probe was run on fold 0 only)."""
-    splits = [("ID fold 0", "id_fold0"), ("ID leak-free fold 0", "id_lc30_fold0"),
-              *[(s.replace("p_ood_", "OOD-"), s) for s in OOD]]  # fmt: skip
+    """BRHR@5 per split; ID values are means over folds (5 FASTA-grouped, 4 leak-free)."""
+    splits = [
+        ("ID", ID),
+        ("ID leak-free", LC30),
+        *[(s.replace("p_ood_", "OOD-"), [s]) for s in OOD],
+    ]
     series = [
         ("random ranking", REF, "esm_probe", "random_analytic/brhr@5"),
         ("ESM-2 probe (no ligand input)", C1, "esm_probe", "probe/brhr@5"),
@@ -166,7 +169,7 @@ def f4(seed: int, pub: dict, out: Path) -> None:
     w, gap = 0.19, 0.02
     xs = np.arange(len(splits))
     for i, (lab, col, prefix, path) in enumerate(series):
-        vals = [mean_over(prefix, path, [s], seed) for _, s in splits]
+        vals = [mean_over(prefix, path, sp, seed) for _, sp in splits]
         pos = xs + (i - 1.5) * (w + gap)
         ax.bar(pos, [v or 0 for v in vals], width=w, color=col, label=lab)
         for p_, v in zip(pos, vals, strict=True):

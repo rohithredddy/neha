@@ -1,7 +1,7 @@
 {
   "name": "esm_probe_p_ood_31_0",
-  "git_commit": "91d085493ca80415a9e5e2d9179584c4a9a35530",
-  "timestamp": "2026-10-24T11:19:26+0530",
+  "git_commit": "6d840718fd5c852884bfe2a9d8d7a7aeaf201c85-dirty",
+  "timestamp": "2026-10-25T09:25:22+0530",
   "host": "DESKTOP-DTM8V32",
   "seed": 0,
   "config": {
@@ -60,7 +60,14 @@
       "p_ood_25",
       "p_ood_28",
       "p_ood_31",
-      "p_ood_33"
+      "p_ood_33",
+      "id_fold1",
+      "id_fold2",
+      "id_fold3",
+      "id_fold4",
+      "id_lc30_fold1",
+      "id_lc30_fold2",
+      "id_lc30_fold3"
     ],
     "n_train_seqs": 2000,
     "neg_per_pos": 3,
@@ -89,5 +96,5 @@
       "brhr@5": 0.19825149569584627
     }
   },
-  "wall_time_s": 16.338298082351685
+  "wall_time_s": 19.01278567314148
 }
