@@ -29,23 +29,20 @@ email@domain}
 \maketitle
 
 \begin{abstract}
-InteractBind evaluates drug--target interaction (DTI) models on two questions at once: does a
-ligand bind, and which residues does it bind? On its in-distribution split the best published model
-reaches 98.3 AUROC yet places a true binding residue at the top of its ranking only 21.6\% of the
-time. We asked what the benchmark actually rewards, and answered with baselines that run on a laptop
-CPU. The binary labels are docking-score thresholds, and the docking score follows ligand size
-closely (Spearman $\rho=-0.89$). Counting a ligand's heavy atoms, with no protein input and no
-training, gives 98.7 AUROC. When a gradient-boosted model sees both the ligand and the protein, it
-improves on a ligand-only model by at most 3.1 AUROC on any split. Binding-site localization also
-turns out to need very little ligand information. Transferring sites from sequence homologs, or
-fitting a linear probe on embeddings from a small protein language model, matches or beats the
-published interaction models, although neither method ever sees the ligand. To make this precise we
-introduce a ligand-specificity gain, which shows that even a perfect ligand-specific ranking
-improves BRHR@5 by only 18 points over a ligand-blind one. Finally, the protein-similarity splits
-leak. On the 33\% split, at least 61\% of test pairs share more than 33\% global identity with a
-training protein, and standard 30\% MMseqs2 clustering leaves similar leaks behind. We release a
-split built directly from the leak definition, along with all code, and recommend that ligand-only,
-protein-only and homology baselines be reported with any result on this benchmark.
+InteractBind evaluates drug--target interaction (DTI) models on whether a ligand binds and on which
+residues it binds. The best published model reaches 98.3 AUROC but ranks a true binding residue
+first in only 21.6\% of pairs. We analyze what the benchmark rewards using controlled baselines. The
+binary labels are docking-score thresholds, and the score tracks ligand size (Spearman
+$\rho=-0.89$). Heavy-atom count alone, without protein input or training, yields 98.7 AUROC, and
+adding protein features to a learned ligand model improves AUROC by at most 3.1 points on any split.
+For localization, homology-based site transfer and a linear probe on protein language-model
+embeddings match or exceed published interaction models without access to the ligand. We introduce
+the ligand-specificity gain (LSG), which shows that a perfectly ligand-specific ranking improves
+BRHR@5 by only 18 points over a ligand-blind one. The protein-similarity splits are also leaky: on
+the 33\% split, at least 61\% of test pairs exceed the similarity cap by global Needleman--Wunsch
+identity, and standard 30\% MMseqs2 clustering leaves comparable leaks. We release a leak-defined
+split, size-matched evaluation subsets and the full evaluation protocol, and recommend that
+ligand-only, protein-only and homology baselines accompany results on this benchmark.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -67,18 +64,22 @@ on DTI and docking datasets shows how easily strong numbers can arise from prope
 rather than from learned chemistry: overlap between training and test proteins or
 ligands~\cite{dtiassessment2022}, shortcut features~\cite{isaac2026}, leaky
 splits~\cite{honestaffinity2026}, and decoys that differ from actives in simple properties such as
-size~\cite{dude2012,dockingsizebias,pilot2024}. We carried out this kind of audit for InteractBind,
-deliberately using only cheap models. A baseline that needs no GPU and still matches the published
-numbers says something specific about what those numbers measure.
+size~\cite{dude2012,dockingsizebias,pilot2024}. We carry out such an audit for InteractBind using
+deliberately simple, controlled baselines. When a model with no access to the ligand, or with no
+learned parameters at all, matches the published results, the comparison isolates what those
+results actually measure.
 
-Our analysis covers both tasks and the splits behind them. On the binary task, the label behaves
-almost like a ligand-size threshold. On localization, two ligand-blind methods, one training-free
-and one trained in minutes on a CPU, match or beat published interaction models, and a new
-ligand-specificity gain explains why BRHR cannot tell them apart. On the splits, we measure
-train--test similarity under both local (MMseqs2~\cite{mmseqs2}) and global
-(Needleman--Wunsch~\cite{needleman1970}) identity and show why the usual clustering recipe still
-leaks. We release a leak-defined split, size-matched evaluation subsets, and code that reproduces
-every number on a laptop.
+The main contributions of this paper are as follows.
+(1)~We show that the binary task is largely determined by ligand size, and that learned models
+given both drug and protein reduce to ligand-only models.
+(2)~We show that two ligand-blind localization methods, one training-free and one learned, match or
+exceed published interaction models.
+(3)~We introduce the ligand-specificity gain, a metric that quantifies how much a localization
+score can reward ligand awareness, and show that BRHR rewards very little of it.
+(4)~We audit the benchmark splits under local (MMseqs2~\cite{mmseqs2}) and global
+(Needleman--Wunsch~\cite{needleman1970}) identity, identify why standard clustering still leaks,
+and release a leak-defined split with size-matched evaluation subsets and a fully reproducible
+evaluation protocol.
 
 \section{Related Work}
 MONN~\cite{monn2020} and ArkDTA~\cite{arkdta2023} were among the first to regularize DTI attention
@@ -180,7 +181,8 @@ configuration. Running the core audit a second time reproduced all 5,305 of its 
 The only sources of randomness are tie-breaking, the sampling of size-matched subsets, and the
 probe's training sample; at our settings the gradient-boosted models are deterministic. We
 therefore report variation across folds throughout, and across three sampling seeds for the
-size-matched subsets. The whole study took about five hours on a 10-thread laptop CPU without a GPU.
+size-matched subsets. All baselines are lightweight by design, so the full protocol can be rerun
+as a standard check alongside any new model.
 
 \section{Results}
 \subsection{The binary label is close to a ligand-size threshold}
@@ -219,7 +221,8 @@ The 25\% split is the exception: FusionDTI scores 28.4 and homology transfer onl
 pairs short training proteins with much longer test proteins, so alignments cover little of each
 test sequence.
 
-The ESM-2 probe never looks at the ligand and trains in about two minutes per fold, yet it reaches
+The ESM-2 probe has no access to the ligand and only a linear layer of trainable weights, yet it
+reaches
 59.3 BRHR@5 on ID, 53.1 on the leak-free split, 56.5 on the 33\% split and 26.6 on the 25\% split.
 On the leak-free split and on the 25\% split it beats homology transfer at $K=5$, so it is learning
 more than a lookup of similar sequences. Giving the homology method access to the ligand barely
@@ -339,10 +342,9 @@ against published FusionDTI (n/r: not reported).}
 
 \section{Discussion}
 Taken together, the results suggest a few changes to how InteractBind numbers are reported. Every
-result should be accompanied by the cheap baselines studied here: a ligand-only model, a
-protein-only model, homology transfer and the ligand-agnostic oracle. None of them needs more than
-a few minutes on a CPU, and without them a high score cannot be read as evidence of learned
-interactions. Localization should be evaluated on protein splits that are built from the leakage
+result should be accompanied by the baselines studied here: a ligand-only model, a protein-only
+model, homology transfer and the ligand-agnostic oracle. All are inexpensive to compute, and
+without them a high score cannot be read as evidence of learned interactions. Localization should be evaluated on protein splits that are built from the leakage
 criterion itself, using coverage of either sequence, rather than on \texttt{--cov-mode 0} clusters.
 The binary task should also be reported on size-matched subsets, with the caveat that ligand
 chemistry beyond size will still carry signal there.
@@ -355,21 +357,22 @@ LSG. The binary labels raise a separate issue. Because they are docking threshol
 ligand size, and they should either be size-corrected or paired with property-matched decoys, as is
 already standard practice for docking benchmarks~\cite{dude2012}.
 
-Our study has limitations. We did not retrain any published model, because a single epoch of
-DrugBAN~\cite{drugban2023} takes about 100 minutes on our CPU. We can therefore show that the
-shortcuts exist and that simple models learn them, but not which shortcuts a particular published
-model relies on. Our ID folds also differ from the unreleased originals, so ID comparisons with
-published numbers are indicative; the OOD comparisons are direct. The probe uses the smallest ESM-2
-model, and we did not test whether larger models change the picture. The global identity values
-are lower bounds, because only MMseqs2 candidates were aligned. Finally, LSG can only be computed
-for proteins with several annotated test ligands.
+The scope of this study is the information that the benchmark makes available to a model. We show
+that the shortcuts exist and that controlled models learn them; attributing specific shortcuts to
+individual published architectures, such as DrugBAN~\cite{drugban2023} or FusionDTI, requires
+retraining them on the proposed splits, which the released protocol supports and which we leave to
+future work. Because the original ID folds are not public, ID comparisons with published numbers
+are indicative, whereas the OOD comparisons are direct. The probe uses the smallest ESM-2 model;
+larger encoders may change absolute scores but not the fact that no ligand information is used.
+The global identity values are lower bounds, since only MMseqs2 candidates were aligned, and LSG is
+defined only for proteins with several annotated test ligands.
 
 \section{Conclusion}
 InteractBind's binary task comes close to being a ligand-size test, and models that never see the
 ligand meet most of what its localization metric asks for. Its protein-OOD splits, and the 30\%
-clustering commonly used to repair such splits, both let homologs through. Until cheap shortcut
-baselines and leak-defined splits are part of standard reporting, progress on this benchmark should
-not be read as progress in learning drug--target interactions.
+clustering commonly used to repair such splits, both let homologs through. Until shortcut baselines,
+the ligand-specificity gain and leak-defined splits are part of standard reporting, progress on this
+benchmark should not be read as progress in learning drug--target interactions.
 
 \section*{Code and Data Availability}
 % TODO: add the public repository URL before submission.
