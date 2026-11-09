@@ -122,3 +122,28 @@
   `results/*.json` was mapped `91d0854 → f729d49` and `6d84071 → dc2e71c`, and the same
   substitution was applied to the docs. The results were **not** re-run. Pre-rewrite history is
   preserved in `D:/safedti/backup/neha-before-rewrite-*.bundle` for audit.
+- **2026-11-09 — Paper/results consistency audit and reference verification.** Every number in
+  `paper/main.tex` was checked against `results/*.json`. The five generated tables regenerate
+  byte-identical from `scripts/make_paper_tables.py`, and the three figures match
+  `results/figures/`. The reproducibility claim was re-verified directly against the stored second
+  run in `D:/safedti/results_backup_2026-10-24`: 5,305 metric values identical, the only 39
+  differences being `fit_s` wall-clock timings. Five prose numbers were corrected:
+  (a) the published ID count is 84,825, of which 16 rows carry no usable label, leaving the 84,809
+  we use — the paper previously attributed 84,809 to the benchmark;
+  (b) the ligand-weighted homology gain is 4.1 points *mean over ID folds*, not a maximum — the
+  true maximum over any fold or split is 5.8 (ID fold 1);
+  (c) the OOD-33 above-50%-identity BRHR@1 range is 62.2--67.8, not 63.9--67.8 (the [0.9, 0.999)
+  bin is 62.2);
+  (d) the abstract said "at least 61\%" for a value of 60.7\%;
+  (e) "level with FusionDTI" and "does not move at all" were replaced by the actual deltas.
+  A comparability caveat was added where ExplainBind's 55.6/74.6 is quoted next to FusionDTI's
+  21.6/35.6, because the two source papers report different baseline BRHR@1 values (16.1 vs 21.6).
+  All 18 bibliography entries were verified against the publisher/arXiv/PMC record and every
+  `VERIFY` marker is now resolved. Notable reference corrections: `dockingsizebias` had a
+  fabricated title (it is Durrant et al., *J. Chem. Inf. Model.* 53(7):1726--1735, 2013);
+  `fusiondti2024` was missing Ke Yuan and is published in Findings of EMNLP 2025;
+  `pilot2024` is published in *Chemical Science* (2024); complete author lists were added for
+  InteractBind (7), ExplainBind (14), ArkDTA (8), ISAAC (4), PILOT (5) and the DTI assessment
+  paper (5). Confirmed against the benchmark paper: 99,391 total pairs, six NCI types, Vina
+  thresholds -7/-5, global Needleman--Wunsch similarity with the identity denominator left
+  unstated, ID folds not released, and FusionDTI's 98.3 / 21.6 / 35.6 / 81.8 / 91.8 / 28.4 / 30.1.

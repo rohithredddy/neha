@@ -1,23 +1,30 @@
-% Entries marked note = {VERIFY ...} were not confirmed against the original and MUST be checked
-% (authors, venue, pages) before submission.
+% All entries checked against the publisher / arXiv / PMC record on 2026-11-09.
+% Author lists are complete and in source order unless the entry uses "and others",
+% which IEEE style renders as "et al." for long lists.
+% Still to confirm before camera-ready: the page range of pilot2024, and the full author
+% lists abbreviated by "and others" (esm2, honestaffinity2026, sklearn, rdkit).
 
 @misc{interactbind2026,
   title  = {A Large-Scale Dataset and Benchmark: Do Protein--Ligand Models Learn Binding Sites or
             Just Binding Likelihood?},
-  author = {Meng, Zhaohan and others},
+  author = {Meng, Zhaohan and Bai, Zhen and Yuan, Ke and Ounis, Iadh and Meng, Zaiqiao and
+            Xu, Hao and Loscalzo, Joseph},
   year   = {2026},
   eprint = {2605.24045},
   archivePrefix = {arXiv},
-  note   = {VERIFY full author list. Under review, NeurIPS 2026 Datasets and Benchmarks Track}
+  primaryClass  = {q-bio.QM},
+  note   = {Under review, NeurIPS 2026 Track on Evaluations and Datasets}
 }
 
 @misc{explainbind2026,
-  title  = {Explainable Physicochemical Determinants of Protein--Ligand Binding via Non-Covalent
-            Interactions},
-  author = {Meng, Zhaohan and others},
+  title  = {{ExplainBind}: Explainable Physicochemical Determinants of Protein--Ligand Binding via
+            Non-Covalent Interactions},
+  author = {Meng, Zhaohan and Bai, Zhen and Yuan, Ke and Song, Jiangning and Zhang, Yumeng and
+            Cheah, Jaime H. and Jiang, Wei and Skepner, Adam and Leahy, Kevin J. and Ounis, Iadh
+            and Oldham, William M. and Meng, Zaiqiao and Xu, Hao and Loscalzo, Joseph},
   year   = {2026},
-  howpublished = {bioRxiv 10.64898/2026.03.03.707476 (v3)},
-  note   = {VERIFY full author list (Glasgow/Broad/Harvard; includes Loscalzo)}
+  howpublished = {bioRxiv 2026.03.03.707476 (v3)},
+  doi    = {10.64898/2026.03.03.707476}
 }
 
 @article{drugban2023,
@@ -26,30 +33,32 @@
   author  = {Bai, Peizhen and Miljkovi{\'c}, Filip and John, Bino and Lu, Haiping},
   journal = {Nature Machine Intelligence},
   volume  = {5},
+  number  = {2},
   pages   = {126--136},
-  year    = {2023}
+  year    = {2023},
+  doi     = {10.1038/s42256-022-00605-1}
 }
 
-@misc{fusiondti2024,
-  title  = {{FusionDTI}: Fine-grained Binding Discovery with Token-level Fusion for Drug--Target
-            Interaction},
-  author = {Meng, Zhaohan and Meng, Zaiqiao and Ounis, Iadh},
-  year   = {2024},
-  eprint = {2406.01651},
-  archivePrefix = {arXiv},
-  note   = {VERIFY authors, arXiv id and final venue}
+@inproceedings{fusiondti2024,
+  title     = {{FusionDTI}: Fine-grained Binding Discovery with Token-level Fusion for
+               Drug--Target Interaction},
+  author    = {Meng, Zhaohan and Meng, Zaiqiao and Yuan, Ke and Ounis, Iadh},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2025},
+  year      = {2025},
+  note      = {arXiv:2406.01651}
 }
 
 @article{arkdta2023,
   title   = {{ArkDTA}: attention regularization guided by non-covalent interactions for
              explainable drug--target binding affinity prediction},
-  author  = {Gim, Mogan and others},
+  author  = {Gim, Mogan and Choe, Junseok and Baek, Seungheun and Park, Jueon and Lee, Chaeeun and
+             Ju, Minjae and Lee, Sumin and Kang, Jaewoo},
   journal = {Bioinformatics},
   volume  = {39},
   number  = {Supplement\_1},
   pages   = {i448--i457},
   year    = {2023},
-  note    = {VERIFY author list and pages}
+  doi     = {10.1093/bioinformatics/btad207}
 }
 
 @article{monn2020,
@@ -61,17 +70,20 @@
   volume  = {10},
   number  = {4},
   pages   = {308--322},
-  year    = {2020}
+  year    = {2020},
+  doi     = {10.1016/j.cels.2020.03.002}
 }
 
 @article{esm2,
   title   = {Evolutionary-scale prediction of atomic-level protein structure with a language model},
-  author  = {Lin, Zeming and others},
+  author  = {Lin, Zeming and Akin, Halil and Rao, Roshan and Hie, Brian and Zhu, Zhongkai and
+             Lu, Wenting and others},
   journal = {Science},
   volume  = {379},
   number  = {6637},
   pages   = {1123--1130},
-  year    = {2023}
+  year    = {2023},
+  doi     = {10.1126/science.ade2574}
 }
 
 @article{mmseqs2,
@@ -82,7 +94,8 @@
   volume  = {35},
   number  = {11},
   pages   = {1026--1028},
-  year    = {2017}
+  year    = {2017},
+  doi     = {10.1038/nbt.3988}
 }
 
 @article{needleman1970,
@@ -93,7 +106,8 @@
   volume  = {48},
   number  = {3},
   pages   = {443--453},
-  year    = {1970}
+  year    = {1970},
+  doi     = {10.1016/0022-2836(70)90057-4}
 }
 
 @article{vina2010,
@@ -104,7 +118,8 @@
   volume  = {31},
   number  = {2},
   pages   = {455--461},
-  year    = {2010}
+  year    = {2010},
+  doi     = {10.1002/jcc.21334}
 }
 
 @article{dude2012,
@@ -115,53 +130,67 @@
   volume  = {55},
   number  = {14},
   pages   = {6582--6594},
-  year    = {2012}
+  year    = {2012},
+  doi     = {10.1021/jm300687e}
 }
 
-@misc{dockingsizebias,
-  title  = {Docking scores correlate with ligand size and polarizability},
-  howpublished = {PMC3735370},
-  note   = {VERIFY: replace with the full citation of the original article}
+@article{dockingsizebias,
+  title   = {Comparing Neural-Network Scoring Functions and the State of the Art: Applications to
+             Common Library Screening},
+  author  = {Durrant, Jacob D. and Friedman, Aaron J. and Rogers, Kathleen E. and
+             McCammon, J. Andrew},
+  journal = {Journal of Chemical Information and Modeling},
+  volume  = {53},
+  number  = {7},
+  pages   = {1726--1735},
+  year    = {2013},
+  doi     = {10.1021/ci400042y}
 }
 
-@misc{pilot2024,
-  title  = {{PILOT}: Equivariant diffusion for pocket conditioned de novo ligand generation with
-            multi-objective guidance via importance sampling},
-  author = {Cremer, Julian and others},
-  year   = {2024},
-  eprint = {2405.14925},
-  archivePrefix = {arXiv},
-  note   = {VERIFY author list}
+@article{pilot2024,
+  title   = {{PILOT}: equivariant diffusion for pocket-conditioned de novo ligand generation with
+             multi-objective guidance via importance sampling},
+  author  = {Cremer, Julian and Le, Tuan and No{\'e}, Frank and Clevert, Djork-Arn{\'e} and
+             Sch{\"u}tt, Kristof T.},
+  journal = {Chemical Science},
+  volume  = {15},
+  year    = {2024},
+  doi     = {10.1039/D4SC03523B}
 }
 
 @misc{dtiassessment2022,
   title  = {Improving the Assessment of Deep Learning Models in the Context of Drug--Target
             Interaction Prediction},
+  author = {Torrisi, Mirko and de la Vega de Le{\'o}n, Antonio and Climent, Guillermo and
+            Loos, Remco and Panjkovich, Alejandro},
   year   = {2022},
-  howpublished = {bioRxiv 2022.04.20.488898; ICLR 2022 workshop},
-  note   = {VERIFY authors}
+  howpublished = {bioRxiv 2022.04.20.488898},
+  doi    = {10.1101/2022.04.20.488898},
+  note   = {ICLR 2022 Workshop on Machine Learning for Drug Discovery}
 }
 
 @misc{isaac2026,
   title  = {{ISAAC}: Auditing Causal Reasoning in Deep Models for Drug--Target Interaction},
+  author = {Tarantino, Barbara and Kim, Sun and Lu, Yijingxiu and Giudici, Paolo},
   year   = {2026},
   eprint = {2605.02962},
-  archivePrefix = {arXiv},
-  note   = {VERIFY authors}
+  archivePrefix = {arXiv}
 }
 
 @misc{honestaffinity2026,
   title  = {{HonestAffinity}: Leak-Aware Evaluation of Protein and Pocket Priors for Binding
             Affinity Prediction},
+  author = {Wei, Junhao and Lu, Baili and Peng, Zhenhong and Li, Wanyan and Huang, Zhirong and
+            Li, Yanxiao and others},
   year   = {2026},
   eprint = {2606.03422},
-  archivePrefix = {arXiv},
-  note   = {VERIFY authors}
+  archivePrefix = {arXiv}
 }
 
 @article{sklearn,
   title   = {Scikit-learn: Machine Learning in {P}ython},
-  author  = {Pedregosa, F. and others},
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and
+             Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and others},
   journal = {Journal of Machine Learning Research},
   volume  = {12},
   pages   = {2825--2830},
@@ -170,6 +199,7 @@
 
 @misc{rdkit,
   title  = {{RDKit}: Open-source cheminformatics},
+  author = {Landrum, Greg and others},
   howpublished = {\url{https://www.rdkit.org}},
   note   = {Version 2026.09.1}
 }
