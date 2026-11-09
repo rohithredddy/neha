@@ -20,7 +20,9 @@ No LaTeX is installed on the dev machine. Either:
   `pdflatex main && bibtex main && pdflatex main && pdflatex main`.
 
 ## Before submission (TODO)
-- Authors and affiliations (`main.tex`, `\author{...}`).
+- Author email addresses in `main.tex` (names and affiliations are filled in). Confirm the city
+  shown under the institution, and check whether the CFP wants degrees or titles listed — IEEE's
+  own template omits them.
 - Repository URL (Code and Data Availability section).
 - Every `VERIFY` entry in `refs.bib`.
 - Page limit of the target venue. BIBM regular papers are typically 8 pages; check the call for
