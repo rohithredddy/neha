@@ -2,7 +2,7 @@
 
 The paper is `paper/main.tex` (IEEE format); `docs/paper/audit_paper_draft.md` is an older draft. All numbers are in `results/tables/tables.md`.
 Reproduce with `make audit` (scripts/run_audit_all.sh, ~2–3 h CPU, no GPU).
-Results were generated at commit `91d0854`. A second full run reproduced all 5,305 numbers exactly.
+Results were generated at commit `f729d49`. A second full run reproduced all 5,305 numbers exactly.
 
 ## Headline findings
 1. **The binary task is a ligand-size test.** Docking score vs heavy atoms: ρ = −0.89.

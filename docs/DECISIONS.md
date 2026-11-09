@@ -108,9 +108,17 @@
   is a no-op. Seed variance is reported where randomness exists: size-matched sampling (seeds
   0/1/2) and the ESM probe's train-protein sample. Fold-to-fold variance is reported throughout,
   and the ESM probe now covers all ID folds (5 + 4), not fold 0 only.
-- **2026-10-25 — `-dirty` tag on the 6d84071 results.** The homology (LSG), size-matched-seed and
-  all-fold probe results are tagged `6d84071…-dirty`. The only uncommitted change while they ran was
-  `scripts/make_figures.py` (F4 now averages over folds; verified with `git diff --stat 6d84071`).
-  That script only plots and writes no results JSON, so the numbers equal those of clean 6d84071.
-  The change is committed right after. Other results are from clean 91d0854; their code did not
+- **2026-10-25 — `-dirty` tag on the dc2e71c results.** The homology (LSG), size-matched-seed and
+  all-fold probe results are tagged `dc2e71c…-dirty`. The only uncommitted change while they ran was
+  `scripts/make_figures.py` (F4 now averages over folds; verified with `git diff --stat dc2e71c`).
+  That script only plots and writes no results JSON, so the numbers equal those of clean dc2e71c.
+  The change is committed right after. Other results are from clean f729d49; their code did not
   change.
+- **2026-11-09 — History rewritten; result commit hashes re-stamped.** Repository history was
+  rewritten to remove vendor/tool references from commit messages, file names and file contents,
+  so every commit hash changed. The code trees differ only in comments, docstrings and the
+  rename of the root working-rules file; no executable logic changed, so the recorded metrics
+  still correspond to the code at the new hashes. The `git_commit` field of all 129
+  `results/*.json` was mapped `91d0854 → f729d49` and `6d84071 → dc2e71c`, and the same
+  substitution was applied to the docs. The results were **not** re-run. Pre-rewrite history is
+  preserved in `D:/safedti/backup/neha-before-rewrite-*.bundle` for audit.
